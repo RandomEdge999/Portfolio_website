@@ -1,19 +1,19 @@
 # Professional Portfolio Website
 
-A modern, responsive, and futuristic portfolio website built with HTML5, CSS3, and JavaScript. This portfolio showcases your professional experience, projects, skills, and provides an easy way for potential employers or clients to contact you.
+A sleek, responsive portfolio crafted with semantic HTML, modern CSS, and vanilla JavaScript. Showcase your work and experience with the kind of polish you’d expect from a product launch.
 
 ## ✨ Features
 
-- **Modern Design**: Clean, professional, and futuristic design with smooth animations
-- **Fully Responsive**: Works perfectly on desktop, tablet, and mobile devices
-- **Interactive Elements**: Smooth scrolling, hover effects, and animated components
-- **Contact Form**: Functional contact form with validation and notifications
-- **Project Showcase**: Beautiful project cards with hover effects and technology tags
-- **Skills Visualization**: Animated skill bars and progress indicators
-- **Timeline Experience**: Professional timeline layout for work experience
-- **Social Integration**: Easy links to LinkedIn, GitHub, and other social profiles
-- **Resume Download**: Direct link to download your resume
-- **SEO Optimized**: Proper meta tags and semantic HTML structure
+- **Modern Design**: Crisp interface with subtle, purposeful motion
+- **Fully Responsive**: Seamlessly adapts to phones, tablets, and desktops
+- **Interactive Elements**: Smooth scrolling, refined hover effects, and tasteful animations
+- **Contact Form**: Validated form with instant feedback and notifications
+- **Project Showcase**: Elegant project cards with hover states and technology tags
+- **Skills Visualization**: Animated bars for quick, visual skill assessment
+- **Timeline Experience**: Clean chronological layout for work history
+- **Social Integration**: Direct pathways to LinkedIn, GitHub, and more
+- **Resume Download**: Immediate access to your latest résumé
+- **SEO Optimized**: Thoughtful meta tags and semantic markup
 
 ## 🚀 Quick Start
 
