@@ -321,12 +321,238 @@ style.textContent = `
 `;
 document.head.appendChild(style);
 
+// Resume dropdown functionality
+function initResumeDropdown() {
+    const resumeBtn = document.getElementById('resumeBtn');
+    const resumeOptions = document.getElementById('resumeOptions');
+    
+    if (resumeBtn && resumeOptions) {
+        // Toggle dropdown on button click
+        resumeBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            resumeOptions.classList.toggle('active');
+            resumeBtn.classList.toggle('active');
+        });
+        
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!resumeBtn.contains(e.target) && !resumeOptions.contains(e.target)) {
+                resumeOptions.classList.remove('active');
+                resumeBtn.classList.remove('active');
+            }
+        });
+        
+        // Handle resume option clicks
+        const resumeOptionLinks = resumeOptions.querySelectorAll('.resume-option');
+        resumeOptionLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                // Close dropdown after selection
+                resumeOptions.classList.remove('active');
+                resumeBtn.classList.remove('active');
+                
+                // Optional: Show a brief notification
+                const resumeType = link.querySelector('span').textContent;
+                showNotification(`Downloading ${resumeType}...`, 'info');
+            });
+        });
+    }
+}
+
+// Modern enhancements functionality
+function initModernFeatures() {
+    // Theme toggle functionality
+    const themeToggle = document.getElementById('themeToggle');
+    if (themeToggle) {
+        themeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('dark-theme');
+            const icon = themeToggle.querySelector('i');
+            icon.classList.toggle('fa-moon');
+            icon.classList.toggle('fa-sun');
+        });
+    }
+
+    // Navigation progress bar
+    function updateProgressBar() {
+        const progressBar = document.querySelector('.progress-bar');
+        if (progressBar) {
+            const scrollTop = window.pageYOffset;
+            const docHeight = document.body.scrollHeight - window.innerHeight;
+            const scrollPercent = (scrollTop / docHeight) * 100;
+            progressBar.style.width = scrollPercent + '%';
+        }
+    }
+
+    window.addEventListener('scroll', updateProgressBar);
+
+    // Project filtering
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    const projectCards = document.querySelectorAll('.project-card');
+
+    filterBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            // Remove active class from all buttons
+            filterBtns.forEach(b => b.classList.remove('active'));
+            // Add active class to clicked button
+            btn.classList.add('active');
+
+            const filter = btn.getAttribute('data-filter');
+
+            projectCards.forEach(card => {
+                if (filter === 'all' || card.getAttribute('data-category') === filter) {
+                    card.style.display = 'block';
+                    card.style.animation = 'fadeInUp 0.5s ease';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+    });
+
+    // Animated counters
+    function animateCounters() {
+        const counters = document.querySelectorAll('.stat-number[data-count]');
+        
+        counters.forEach(counter => {
+            const target = parseInt(counter.getAttribute('data-count'));
+            const duration = 2000;
+            const increment = target / (duration / 16);
+            let current = 0;
+
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= target) {
+                    current = target;
+                    clearInterval(timer);
+                }
+                counter.textContent = Math.floor(current);
+            }, 16);
+        });
+    }
+
+    // Intersection Observer for animations
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('animate');
+                
+                // Trigger counter animation for hero stats
+                if (entry.target.classList.contains('hero-stats')) {
+                    animateCounters();
+                }
+                
+                // Trigger skill bar animations
+                if (entry.target.classList.contains('skill-progress')) {
+                    const width = entry.target.getAttribute('data-width');
+                    setTimeout(() => {
+                        entry.target.style.width = width + '%';
+                    }, 200);
+                }
+            }
+        });
+    }, observerOptions);
+
+    // Observe elements for animations
+    document.querySelectorAll('.stat-number[data-count], .skill-progress, .hero-stats').forEach(el => {
+        observer.observe(el);
+    });
+
+    // Enhanced scroll indicator
+    function updateScrollIndicator() {
+        const scrollIndicator = document.querySelector('.modern-scroll');
+        if (scrollIndicator) {
+            const scrollPercent = (window.pageYOffset / (document.body.scrollHeight - window.innerHeight)) * 100;
+            if (scrollPercent > 10) {
+                scrollIndicator.style.opacity = '0';
+            } else {
+                scrollIndicator.style.opacity = '1';
+            }
+        }
+    }
+
+    window.addEventListener('scroll', updateScrollIndicator);
+
+    // Modern button hover effects
+    document.querySelectorAll('.modern-btn').forEach(btn => {
+        btn.addEventListener('mouseenter', () => {
+            btn.style.transform = 'translateY(-2px) scale(1.05)';
+        });
+        
+        btn.addEventListener('mouseleave', () => {
+            btn.style.transform = 'translateY(0) scale(1)';
+        });
+    });
+
+    // Enhanced project card interactions
+    document.querySelectorAll('.modern-card').forEach(card => {
+        card.addEventListener('mouseenter', () => {
+            card.style.transform = 'translateY(-10px) scale(1.02)';
+        });
+        
+        card.addEventListener('mouseleave', () => {
+            card.style.transform = 'translateY(0) scale(1)';
+        });
+    });
+
+    // Parallax effect for hero background
+    function initParallaxEffect() {
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const heroParticles = document.querySelector('.hero-particles');
+            const heroGradient = document.querySelector('.hero-gradient');
+            
+            if (heroParticles) {
+                heroParticles.style.transform = `translateY(${scrolled * 0.5}px)`;
+            }
+            
+            if (heroGradient) {
+                heroGradient.style.transform = `translateY(${scrolled * 0.3}px)`;
+            }
+        });
+    }
+
+    initParallaxEffect();
+
+    // Typing animation for hero text
+    function initTypingAnimation() {
+        const typingText = document.querySelector('.typing-text');
+        if (typingText) {
+            const text = typingText.textContent;
+            typingText.textContent = '';
+            typingText.style.borderRight = '2px solid var(--primary-color)';
+            
+            let i = 0;
+            const typeWriter = () => {
+                if (i < text.length) {
+                    typingText.textContent += text.charAt(i);
+                    i++;
+                    setTimeout(typeWriter, 100);
+                } else {
+                    setTimeout(() => {
+                        typingText.style.borderRight = 'none';
+                    }, 1000);
+                }
+            };
+            
+            setTimeout(typeWriter, 1000);
+        }
+    }
+
+    initTypingAnimation();
+}
+
 // Initialize all functions when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
     // Initialize animations
     animateSkillBars();
     initParallax();
     createParticles();
+    initResumeDropdown();
+    initModernFeatures();
     
     // Add typing effect to hero title (optional)
     const heroTitle = document.querySelector('.hero-title .name');

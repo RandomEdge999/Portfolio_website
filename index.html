@@ -11,79 +11,169 @@
 </head>
 <body>
     <!-- Navigation -->
-    <nav class="navbar">
+    <nav class="navbar modern-nav">
         <div class="nav-container">
             <div class="nav-logo">
-                <span class="logo-text">Portfolio</span>
+                <div class="logo-icon">
+                    <i class="fas fa-code"></i>
+                </div>
+                <span class="logo-text">Aleem</span>
+                <span class="logo-subtitle">Portfolio</span>
             </div>
             <ul class="nav-menu">
                 <li class="nav-item">
-                    <a href="#home" class="nav-link">Home</a>
+                    <a href="#home" class="nav-link modern-nav-link">
+                        <span class="nav-text">Home</span>
+                        <div class="nav-indicator"></div>
+                    </a>
                 </li>
                 <li class="nav-item">
-                    <a href="#about" class="nav-link">About</a>
+                    <a href="#about" class="nav-link modern-nav-link">
+                        <span class="nav-text">About</span>
+                        <div class="nav-indicator"></div>
+                    </a>
                 </li>
                 <li class="nav-item">
-                    <a href="#projects" class="nav-link">Projects</a>
+                    <a href="#projects" class="nav-link modern-nav-link">
+                        <span class="nav-text">Projects</span>
+                        <div class="nav-indicator"></div>
+                    </a>
                 </li>
                 <li class="nav-item">
-                    <a href="#skills" class="nav-link">Skills</a>
+                    <a href="#skills" class="nav-link modern-nav-link">
+                        <span class="nav-text">Skills</span>
+                        <div class="nav-indicator"></div>
+                    </a>
                 </li>
                 <li class="nav-item">
-                    <a href="#experience" class="nav-link">Experience</a>
+                    <a href="#experience" class="nav-link modern-nav-link">
+                        <span class="nav-text">Experience</span>
+                        <div class="nav-indicator"></div>
+                    </a>
                 </li>
                 <li class="nav-item">
-                    <a href="#contact" class="nav-link">Contact</a>
+                    <a href="#contact" class="nav-link modern-nav-link">
+                        <span class="nav-text">Contact</span>
+                        <div class="nav-indicator"></div>
+                    </a>
                 </li>
             </ul>
-            <div class="hamburger">
-                <span class="bar"></span>
-                <span class="bar"></span>
-                <span class="bar"></span>
+            <div class="nav-actions">
+                <button class="theme-toggle" id="themeToggle">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <div class="hamburger modern-hamburger">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </div>
             </div>
+        </div>
+        <div class="nav-progress">
+            <div class="progress-bar"></div>
         </div>
     </nav>
 
     <!-- Hero Section -->
     <section id="home" class="hero">
+        <div class="hero-background">
+            <div class="hero-particles"></div>
+            <div class="hero-gradient"></div>
+        </div>
         <div class="hero-container">
             <div class="hero-content">
-                                    <div class="hero-text" data-aos="fade-up">
-                        <h1 class="hero-title">
-                            <span class="gradient-text">Hello, I'm</span>
-                            <span class="name">Muhammad Aleem Azhar</span>
-                        </h1>
-                        <p class="hero-subtitle">AI & Data Science Specialist</p>
-                        <p class="hero-description">
-                            Computer Science undergraduate at Rhodes College with deep passion for Artificial Intelligence and Data Science. 
-                            Specialized in building data-driven applications, creating intelligent systems, and developing real-world solutions.
-                        </p>
-                    <div class="hero-buttons">
-                        <a href="#projects" class="btn btn-primary">View My Work</a>
-                        <a href="#contact" class="btn btn-secondary">Get In Touch</a>
+                <div class="hero-text" data-aos="fade-up">
+                    <div class="hero-badge">
+                        <span class="badge-icon">🚀</span>
+                        <span class="badge-text">Available for Opportunities</span>
                     </div>
-                                            <div class="hero-social">
-                            <a href="https://www.linkedin.com/in/m-aleem-azhar" target="_blank" class="social-link">
-                                <i class="fab fa-linkedin"></i>
-                            </a>
-                            <a href="https://github.com/RandomEdge999" target="_blank" class="social-link">
-                                <i class="fab fa-github"></i>
-                            </a>
-                            <a href="mailto:azhmu-26@rhodes.edu" class="social-link">
-                                <i class="fas fa-envelope"></i>
-                            </a>
+                    <h1 class="hero-title">
+                        <span class="gradient-text typing-text">Hello, I'm</span>
+                        <span class="name glitch-text" data-text="Muhammad Aleem Azhar">Muhammad Aleem Azhar</span>
+                    </h1>
+                    <div class="hero-subtitle-container">
+                        <p class="hero-subtitle">
+                            <span class="subtitle-highlight">AI & Data Science Specialist</span>
+                        </p>
+                        <div class="typing-cursor"></div>
+                    </div>
+                    <p class="hero-description">
+                        Computer Science undergraduate at Rhodes College with deep passion for Artificial Intelligence and Data Science. 
+                        Specialized in building data-driven applications, creating intelligent systems, and developing real-world solutions.
+                    </p>
+                    <div class="hero-stats">
+                        <div class="stat-item">
+                            <span class="stat-number" data-count="10">0</span>
+                            <span class="stat-label">Projects</span>
                         </div>
+                        <div class="stat-item">
+                            <span class="stat-number" data-count="5">0</span>
+                            <span class="stat-label">Languages</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number" data-count="2">0</span>
+                            <span class="stat-label">Years Experience</span>
+                        </div>
+                    </div>
+                    <div class="hero-buttons">
+                        <a href="#projects" class="btn btn-primary modern-btn">
+                            <span class="btn-text">View My Work</span>
+                            <div class="btn-bg"></div>
+                            <i class="fas fa-arrow-right btn-icon"></i>
+                        </a>
+                        <a href="#contact" class="btn btn-secondary modern-btn">
+                            <span class="btn-text">Get In Touch</span>
+                            <div class="btn-bg"></div>
+                            <i class="fas fa-paper-plane btn-icon"></i>
+                        </a>
+                    </div>
+                    <div class="hero-social">
+                        <a href="https://www.linkedin.com/in/m-aleem-azhar" target="_blank" class="social-link modern-social">
+                            <i class="fab fa-linkedin"></i>
+                            <span class="social-tooltip">LinkedIn</span>
+                        </a>
+                        <a href="https://github.com/RandomEdge999" target="_blank" class="social-link modern-social">
+                            <i class="fab fa-github"></i>
+                            <span class="social-tooltip">GitHub</span>
+                        </a>
+                        <a href="mailto:azhmu-26@rhodes.edu" class="social-link modern-social">
+                            <i class="fas fa-envelope"></i>
+                            <span class="social-tooltip">Email</span>
+                        </a>
+                    </div>
                 </div>
                 <div class="hero-image" data-aos="fade-left">
                     <div class="image-container">
-                        <img src="my_image.jpeg" alt="Muhammad Aleem Azhar" class="profile-image">
-                        <div class="image-glow"></div>
+                        <div class="image-frame">
+                            <img src="my_image.jpeg" alt="Muhammad Aleem Azhar" class="profile-image">
+                            <div class="image-overlay">
+                                <div class="overlay-content">
+                                    <h3>AI & Data Science</h3>
+                                    <p>Building the Future</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="floating-elements">
+                            <div class="floating-icon" style="--delay: 0s">
+                                <i class="fas fa-brain"></i>
+                            </div>
+                            <div class="floating-icon" style="--delay: 1s">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <div class="floating-icon" style="--delay: 2s">
+                                <i class="fas fa-robot"></i>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="scroll-indicator">
-            <div class="scroll-arrow"></div>
+        <div class="scroll-indicator modern-scroll">
+            <div class="scroll-text">Scroll to explore</div>
+            <div class="scroll-arrow">
+                <div class="arrow-line"></div>
+                <div class="arrow-head"></div>
+            </div>
         </div>
     </section>
 
@@ -167,33 +257,170 @@
     </section>
 
     <!-- Projects Section -->
-    <section id="projects" class="projects">
+    <section id="projects" class="projects modern-projects">
         <div class="container">
             <div class="section-header" data-aos="fade-up">
+                <div class="section-badge">
+                    <i class="fas fa-code"></i>
+                    <span>Portfolio</span>
+                </div>
                 <h2 class="section-title">Featured Projects</h2>
-                <p class="section-subtitle">Some of my recent work</p>
+                <p class="section-subtitle">Innovative solutions that showcase my expertise in AI, Data Science, and Software Engineering</p>
             </div>
-            <div class="projects-grid">
-                <div class="project-card" data-aos="fade-up" data-aos-delay="100">
+            <div class="projects-filter">
+                <button class="filter-btn active" data-filter="all">All Projects</button>
+                <button class="filter-btn" data-filter="ai">AI & ML</button>
+                <button class="filter-btn" data-filter="web">Web Development</button>
+                <button class="filter-btn" data-filter="data">Data Science</button>
+            </div>
+            <div class="projects-grid modern-grid">
+                <div class="project-card modern-card" data-category="ai" data-aos="fade-up" data-aos-delay="100">
                     <div class="project-image">
                         <img src="hand_reading_AI.png" alt="Hand Reading AI">
                         <div class="project-overlay">
                             <div class="project-links">
-                                <a href="https://github.com/RandomEdge999/hand-reading-ai" target="_blank" class="project-link"><i class="fab fa-github"></i></a>
+                                <a href="https://github.com/RandomEdge999/hand-reading-ai" target="_blank" class="project-link">
+                                    <i class="fab fa-github"></i>
+                                    <span class="link-tooltip">View Code</span>
+                                </a>
+                                <button class="project-link demo-btn">
+                                    <i class="fas fa-play"></i>
+                                    <span class="link-tooltip">Live Demo</span>
+                                </button>
                             </div>
+                        </div>
+                        <div class="project-badge">
+                            <span class="badge-text">AI/ML</span>
                         </div>
                     </div>
                     <div class="project-content">
-                        <h3 class="project-title">Hand Reading AI</h3>
+                        <div class="project-header">
+                            <h3 class="project-title">Hand Reading AI</h3>
+                            <div class="project-status">
+                                <span class="status-dot"></span>
+                                <span class="status-text">Completed</span>
+                            </div>
+                        </div>
                         <p class="project-description">
-                            Built an AI-powered desktop application that detects hand signs using computer vision. 
-                            Integrated TensorFlow Lite, OpenCV, and custom-trained models to classify gestures in real-time.
+                            Developed an AI-powered desktop application for real-time hand sign recognition, 
+                            leveraging TensorFlow Lite, OpenCV, and custom-trained models to classify 
+                            gestures with high accuracy and seamless performance.
                         </p>
                         <div class="project-tech">
                             <span class="tech-tag">Python</span>
                             <span class="tech-tag">TensorFlow</span>
                             <span class="tech-tag">OpenCV</span>
                             <span class="tech-tag">Computer Vision</span>
+                        </div>
+                        <div class="project-metrics">
+                            <div class="metric">
+                                <span class="metric-value">95%</span>
+                                <span class="metric-label">Accuracy</span>
+                            </div>
+                            <div class="metric">
+                                <span class="metric-value">Real-time</span>
+                                <span class="metric-label">Performance</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="project-card modern-card" data-category="data" data-aos="fade-up" data-aos-delay="200">
+                    <div class="project-image">
+                        <img src="city_pulse.png" alt="City Pulse — Real Time City Analytics">
+                        <div class="project-overlay">
+                            <div class="project-links">
+                                <a href="https://github.com/RandomEdge999/City-Pulse" target="_blank" class="project-link">
+                                    <i class="fab fa-github"></i>
+                                    <span class="link-tooltip">View Code</span>
+                                </a>
+                                <button class="project-link demo-btn">
+                                    <i class="fas fa-external-link-alt"></i>
+                                    <span class="link-tooltip">Live Demo</span>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="project-badge">
+                            <span class="badge-text">Data Science</span>
+                        </div>
+                    </div>
+                    <div class="project-content">
+                        <div class="project-header">
+                            <h3 class="project-title">City Pulse — Real Time City Analytics</h3>
+                            <div class="project-status">
+                                <span class="status-dot"></span>
+                                <span class="status-text">Completed</span>
+                            </div>
+                        </div>
+                        <p class="project-description">
+                            City Pulse is a real-time city analytics platform: it ingests social and 
+                            environmental streams, runs emotion/anomaly detection and 24-hour forecasts, 
+                            and serves a FastAPI/TimescaleDB/Redis backend (10+ endpoints) to a Next.js + Mapbox dashboard.
+                        </p>
+                        <div class="project-tech">
+                            <span class="tech-tag">Mapbox</span>
+                            <span class="tech-tag">Python</span>
+                            <span class="tech-tag">FastAPI</span>
+                            <span class="tech-tag">TimescaleDB/PostGIS</span>
+                        </div>
+                        <div class="project-metrics">
+                            <div class="metric">
+                                <span class="metric-value">10+</span>
+                                <span class="metric-label">API Endpoints</span>
+                            </div>
+                            <div class="metric">
+                                <span class="metric-value">Real-time</span>
+                                <span class="metric-label">Analytics</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="project-card" data-aos="fade-up" data-aos-delay="200">
+                    <div class="project-image">
+                        <img src="teacher_eval_sys.png" alt="Teacher Evaluator System">
+                        <div class="project-overlay">
+                            <div class="project-links">
+                                <a href="https://github.com/RandomEdge999/Teacher-Evaluation-System" target="_blank" class="project-link"><i class="fab fa-github"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="project-content">
+                        <h3 class="project-title">Teacher Evaluator System</h3>
+                        <p class="project-description">
+                            Teacher Evaluation System is a web-based educator assessment platform: 
+                            it records real-time classroom observations, generates performance reports, 
+                            and tracks teacher progress through dashboards, 
+                            powered by a Next.js + FastAPI + PostgreSQL stack.
+                        </p>
+                        <div class="project-tech">
+                            <span class="tech-tag">Next.js</span>
+                            <span class="tech-tag">FastAPI</span>
+                            <span class="tech-tag">PostgreSQL</span>
+                            <span class="tech-tag">Docker</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="project-card" data-aos="fade-up" data-aos-delay="200">
+                    <div class="project-image">
+                        <img src="soccer_predictor_pro.png" alt="Soccer Predictor Pro">
+                        <div class="project-overlay">
+                            <div class="project-links">
+                                <a href="https://github.com/RandomEdge999/Soccer-Predictor-Pro" target="_blank" class="project-link"><i class="fab fa-github"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="project-content">
+                        <h3 class="project-title">Soccer Predictor Pro</h3>
+                        <p class="project-description">
+                            Soccer Predictor Pro is an end-to-end ML app that scrapes fixtures and odds, 
+                            engineers rolling features, and serves calibrated win–draw–loss probabilities and expected goals via a Flask API and lightweight UI, 
+                            with weekly retraining, Docker, and cached responses under 200 ms.
+                        <div class="project-tech">
+                            <span class="tech-tag">Python</span>
+                            <span class="tech-tag">Flask</span>
+                            <span class="tech-tag">Scikit-learn</span>
+                            <span class="tech-tag">Docker</span>
                         </div>
                     </div>
                 </div>
@@ -210,8 +437,10 @@
                     <div class="project-content">
                         <h3 class="project-title">AI Social Mirror</h3>
                         <p class="project-description">
-                            Created a web app that analyzes the tone and emotional perception of written content. 
-                            Used HuggingFace Transformers to extract sentiment, tone, and intent from user-submitted text.
+                            AI Social Mirror is an AI-powered web application for analyzing tone, sentiment, 
+                            and intent across social posts, bios, and emails: it processes user input with Hugging Face Transformers, 
+                            extracts nuanced emotional and intent-based cues, 
+                            and delivers insights via a sleek frontend—streamlining digital self-reflection and communication clarity.
                         </p>
                         <div class="project-tech">
                             <span class="tech-tag">Next.js</span>
@@ -234,8 +463,9 @@
                     <div class="project-content">
                         <h3 class="project-title">Image Classification Neural Network Framework</h3>
                         <p class="project-description">
-                            Built a fully modular neural network framework from scratch in Python, achieving 90%+ accuracy on Fashion MNIST. 
-                            Implemented computational graphs, backpropagation, and advanced optimization techniques.
+                            Developed a fully modular neural network framework from scratch in Python, 
+                            implementing computational graphs, backpropagation, 
+                            and advanced optimizers, and achieving 90%+ accuracy on Fashion-MNIST.
                         </p>
                         <div class="project-tech">
                             <span class="tech-tag">Python</span>
@@ -258,8 +488,9 @@
                     <div class="project-content">
                         <h3 class="project-title">Cancer Cell Detection with Computer Vision</h3>
                         <p class="project-description">
-                            Developed computer vision algorithms for biomedical applications, implementing edge detection, 
-                            feature extraction, and automated cancer cell detection in microscopy images.
+                            Developed computer vision algorithms for biomedical imaging, 
+                            implementing edge detection, feature extraction,
+                             and automated cancer cell detection in microscopy datasets.
                         </p>
                         <div class="project-tech">
                             <span class="tech-tag">Python</span>
@@ -370,23 +601,33 @@
     </section>
 
     <!-- Skills Section -->
-    <section id="skills" class="skills">
+    <section id="skills" class="skills modern-skills">
         <div class="container">
             <div class="section-header" data-aos="fade-up">
+                <div class="section-badge">
+                    <i class="fas fa-tools"></i>
+                    <span>Expertise</span>
+                </div>
                 <h2 class="section-title">Skills & Expertise</h2>
-                <p class="section-subtitle">Technologies I work with</p>
+                <p class="section-subtitle">Technologies and tools I master to build innovative solutions</p>
             </div>
             <div class="skills-content">
                 <div class="skills-category" data-aos="fade-up" data-aos-delay="100">
                     <h3>Programming Languages</h3>
                     <div class="skills-grid">
-                        <div class="skill-item">
-                            <div class="skill-icon">
-                                <i class="fab fa-python"></i>
+                        <div class="skill-item modern-skill">
+                            <div class="skill-header">
+                                <div class="skill-icon">
+                                    <i class="fab fa-python"></i>
+                                </div>
+                                <div class="skill-info">
+                                    <span class="skill-name">Python</span>
+                                    <span class="skill-level">Expert</span>
+                                </div>
+                                <span class="skill-percentage">95%</span>
                             </div>
-                            <span class="skill-name">Python</span>
                             <div class="skill-bar">
-                                <div class="skill-progress" style="width: 95%"></div>
+                                <div class="skill-progress" data-width="95"></div>
                             </div>
                         </div>
                         <div class="skill-item">
@@ -627,10 +868,25 @@
                             <i class="fab fa-github"></i>
                             <span>GitHub</span>
                         </a>
-                        <a href="resume.pdf" download class="social-btn">
-                            <i class="fas fa-download"></i>
-                            <span>Download Resume</span>
-                        </a>
+                        <div class="resume-selector">
+                            <div class="resume-dropdown">
+                                <button class="resume-btn" id="resumeBtn">
+                                    <i class="fas fa-download"></i>
+                                    <span>Download Resume</span>
+                                    <i class="fas fa-chevron-down"></i>
+                                </button>
+                                <div class="resume-options" id="resumeOptions">
+                                    <a href="resume_ml_ai.pdf" download class="resume-option">
+                                        <i class="fas fa-brain"></i>
+                                        <span>ML & AI Resume</span>
+                                    </a>
+                                    <a href="resume_software_eng.pdf" download class="resume-option">
+                                        <i class="fas fa-code"></i>
+                                        <span>Software Engineering Resume</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="contact-form" data-aos="fade-left">
