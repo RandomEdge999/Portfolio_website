@@ -1578,57 +1578,10 @@ section {
     visibility: visible;
 }
 
-.project-metrics {
-    display: flex;
-    gap: 1rem;
-    margin-top: 1rem;
-}
-
-.metric {
-    text-align: center;
-    flex: 1;
-}
-
-.metric-value {
-    display: block;
-    font-size: 1.2rem;
-    font-weight: 700;
-    color: var(--primary-color);
-}
-
-.metric-label {
-    font-size: 0.8rem;
-    color: var(--text-secondary);
-}
 
 /* Modern Skills Section */
 .modern-skills {
     background: white;
-}
-
-.modern-skill {
-    background: white;
-    border-radius: 15px;
-    padding: 1.5rem;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-    transition: var(--transition);
-    border: 1px solid var(--border-color);
-}
-
-.modern-skill:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-}
-
-.skill-header {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    margin-bottom: 1rem;
-}
-
-.skill-info {
-    flex: 1;
 }
 
 .skill-name {
@@ -1636,16 +1589,6 @@ section {
     font-weight: 600;
     color: var(--text-primary);
     margin-bottom: 0.25rem;
-}
-
-.skill-level {
-    font-size: 0.8rem;
-    color: var(--text-secondary);
-}
-
-.skill-percentage {
-    font-weight: 700;
-    color: var(--primary-color);
 }
 
 .skill-bar {
@@ -1765,10 +1708,6 @@ section {
     border: 1px solid var(--border-color);
 }
 
-.dark-theme .modern-skill {
-    background: var(--bg-secondary);
-    border: 1px solid var(--border-color);
-}
 
 .dark-theme .filter-btn {
     background: var(--bg-secondary);
@@ -1857,10 +1796,6 @@ section {
         margin-bottom: 1.5rem;
     }
     
-    .project-metrics {
-        flex-direction: column;
-        gap: 0.5rem;
-    }
     
     .nav-actions {
         gap: 0.5rem;
@@ -1917,7 +1852,6 @@ section {
 
 /* Performance Optimizations */
 .modern-card,
-.modern-skill,
 .modern-btn {
     will-change: transform;
 }
@@ -2227,4 +2161,4 @@ textarea:focus,
 a:focus {
     outline: 2px solid var(--primary-color);
     outline-offset: 2px;
-} 
+}

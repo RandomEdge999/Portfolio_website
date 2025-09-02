@@ -749,4 +749,4 @@ function handleSwipe() {
             });
         }
     }
-} 
+}
