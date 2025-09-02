@@ -6,9 +6,10 @@
 }
 
 :root {
-    --primary-color: #6366f1;
-    --secondary-color: #8b5cf6;
-    --accent-color: #06b6d4;
+    /* Refined palette: electric violet + cyan gradient */
+    --primary-color: #5b5cf8; /* Electric Indigo */
+    --secondary-color: #22d3ee; /* Cyan */
+    --accent-color: #a855f7; /* Vibrant Purple */
     --text-primary: #1f2937;
     --text-secondary: #6b7280;
     --text-light: #9ca3af;
@@ -16,8 +17,8 @@
     --bg-secondary: #f9fafb;
     --bg-dark: #111827;
     --border-color: #e5e7eb;
-    --gradient-primary: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-    --gradient-secondary: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
+    --gradient-primary: linear-gradient(135deg, #5b5cf8 0%, #a855f7 100%);
+    --gradient-secondary: linear-gradient(135deg, #22d3ee 0%, #60a5fa 100%);
     --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
     --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
     --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
@@ -36,6 +37,28 @@ body {
     color: var(--text-primary);
     background-color: var(--bg-primary);
     overflow-x: hidden;
+}
+
+.skip-link {
+    position: absolute;
+    left: -9999px;
+    top: auto;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+}
+
+.skip-link:focus {
+    position: fixed;
+    left: 1rem;
+    top: 1rem;
+    width: auto;
+    height: auto;
+    padding: 0.5rem 1rem;
+    background: var(--primary-color);
+    color: #fff;
+    border-radius: 8px;
+    z-index: 10000;
 }
 
 .container {
@@ -1012,25 +1035,7 @@ section {
     gap: 1rem;
 }
 
-.theme-toggle {
-    width: 40px;
-    height: 40px;
-    border: none;
-    background: var(--bg-secondary);
-    border-radius: 10px;
-    color: var(--text-primary);
-    cursor: pointer;
-    transition: var(--transition);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.theme-toggle:hover {
-    background: var(--primary-color);
-    color: white;
-    transform: scale(1.1);
-}
+/* theme toggle removed */
 
 .modern-nav-link {
     position: relative;
@@ -1190,6 +1195,8 @@ section {
 
 .stat-item {
     text-align: center;
+    transform: translateY(10px);
+    opacity: 0;
 }
 
 .stat-number {
@@ -1200,11 +1207,18 @@ section {
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+    animation: popIn 0.6s ease forwards;
 }
 
 .stat-label {
     font-size: 0.9rem;
     color: var(--text-secondary);
+}
+
+@keyframes popIn {
+    0% { transform: scale(0.9); opacity: 0; }
+    60% { transform: scale(1.05); opacity: 1; }
+    100% { transform: scale(1); opacity: 1; }
 }
 
 .modern-btn {
@@ -1293,6 +1307,42 @@ section {
 .modern-social:hover .social-tooltip {
     opacity: 1;
     visibility: visible;
+}
+
+/* Better focus styles */
+:focus-visible {
+    outline: 3px solid rgba(99, 102, 241, 0.6);
+    outline-offset: 2px;
+    border-radius: 6px;
+}
+
+/* Back to Top */
+.back-to-top {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: none;
+    background: var(--gradient-primary);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 10px 25px rgba(99, 102, 241, 0.3);
+    cursor: pointer;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
+    z-index: 1000;
+}
+
+.back-to-top.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
 }
 
 .image-frame {
@@ -1703,15 +1753,7 @@ section {
 }
 
 /* Dark Theme Support */
-.dark-theme {
-    --text-primary: #f9fafb;
-    --text-secondary: #d1d5db;
-    --text-light: #9ca3af;
-    --bg-primary: #111827;
-    --bg-secondary: #1f2937;
-    --bg-dark: #000000;
-    --border-color: #374151;
-}
+/* dark theme removed */
 
 .dark-theme .modern-nav {
     background: rgba(17, 24, 39, 0.8);

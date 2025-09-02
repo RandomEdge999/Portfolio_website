@@ -4,14 +4,27 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>Muhammad Aleem Azhar - AI & Data Science Portfolio</title>
+    <meta name="description" content="Portfolio of Muhammad Aleem Azhar — AI & Data Science specialist building intelligent, data-driven applications and modern software products.">
+    <meta name="theme-color" content="#6366f1">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Muhammad Aleem Azhar - AI & Data Science Portfolio">
+    <meta property="og:description" content="AI & Data Science specialist building intelligent, data-driven applications and modern software products.">
+    <meta property="og:image" content="my_image.jpeg">
+    <meta property="og:url" content="/">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Muhammad Aleem Azhar - AI & Data Science Portfolio">
+    <meta name="twitter:description" content="AI & Data Science specialist building intelligent, data-driven applications and modern software products.">
+    <meta name="twitter:image" content="my_image.jpeg">
+    <link rel="icon" href="git.png" type="image/png">
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
 </head>
 <body>
+    <a class="skip-link" href="#home">Skip to main content</a>
     <!-- Navigation -->
-    <nav class="navbar modern-nav">
+    <nav class="navbar modern-nav" role="navigation" aria-label="Primary">
         <div class="nav-container">
             <div class="nav-logo">
                 <div class="logo-icon">
@@ -59,9 +72,6 @@
                 </li>
             </ul>
             <div class="nav-actions">
-                <button class="theme-toggle" id="themeToggle">
-                    <i class="fas fa-moon"></i>
-                </button>
                 <div class="hamburger modern-hamburger">
                     <span class="bar"></span>
                     <span class="bar"></span>
@@ -101,17 +111,17 @@
                         Computer Science undergraduate at Rhodes College with deep passion for Artificial Intelligence and Data Science. 
                         Specialized in building data-driven applications, creating intelligent systems, and developing real-world solutions.
                     </p>
-                    <div class="hero-stats">
-                        <div class="stat-item">
-                            <span class="stat-number" data-count="10">0</span>
+                    <div class="hero-stats" data-aos="fade-up" data-aos-delay="200">
+                        <div class="stat-item" data-aos="fade-up" data-aos-delay="250">
+                            <span class="stat-number" data-count="10" data-suffix="+">0</span>
                             <span class="stat-label">Projects</span>
                         </div>
-                        <div class="stat-item">
+                        <div class="stat-item" data-aos="fade-up" data-aos-delay="320">
                             <span class="stat-number" data-count="5">0</span>
                             <span class="stat-label">Languages</span>
                         </div>
-                        <div class="stat-item">
-                            <span class="stat-number" data-count="2">0</span>
+                        <div class="stat-item" data-aos="fade-up" data-aos-delay="390">
+                            <span class="stat-number" data-count="6" data-suffix="+">0</span>
                             <span class="stat-label">Years Experience</span>
                         </div>
                     </div>
@@ -128,15 +138,15 @@
                         </a>
                     </div>
                     <div class="hero-social">
-                        <a href="https://www.linkedin.com/in/m-aleem-azhar" target="_blank" class="social-link modern-social">
+                        <a href="https://www.linkedin.com/in/m-aleem-azhar" target="_blank" rel="noopener noreferrer" class="social-link modern-social" aria-label="LinkedIn profile">
                             <i class="fab fa-linkedin"></i>
                             <span class="social-tooltip">LinkedIn</span>
                         </a>
-                        <a href="https://github.com/RandomEdge999" target="_blank" class="social-link modern-social">
+                        <a href="https://github.com/RandomEdge999" target="_blank" rel="noopener noreferrer" class="social-link modern-social" aria-label="GitHub profile">
                             <i class="fab fa-github"></i>
                             <span class="social-tooltip">GitHub</span>
                         </a>
-                        <a href="mailto:azhmu-26@rhodes.edu" class="social-link modern-social">
+                        <a href="mailto:azhmu-26@rhodes.edu" class="social-link modern-social" aria-label="Email Muhammad">
                             <i class="fas fa-envelope"></i>
                             <span class="social-tooltip">Email</span>
                         </a>
@@ -145,7 +155,7 @@
                 <div class="hero-image" data-aos="fade-left">
                     <div class="image-container">
                         <div class="image-frame">
-                            <img src="my_image.jpeg" alt="Muhammad Aleem Azhar" class="profile-image">
+                            <img src="my_image.jpeg" alt="Muhammad Aleem Azhar" class="profile-image" decoding="async">
                             <div class="image-overlay">
                                 <div class="overlay-content">
                                     <h3>AI & Data Science</h3>
@@ -272,14 +282,16 @@
                 <button class="filter-btn" data-filter="ai">AI & ML</button>
                 <button class="filter-btn" data-filter="web">Web Development</button>
                 <button class="filter-btn" data-filter="data">Data Science</button>
+                <button class="filter-btn" data-filter="software">Software</button>
+                <button class="filter-btn" data-filter="vr">VR / 3D</button>
             </div>
             <div class="projects-grid modern-grid">
                 <div class="project-card modern-card" data-category="ai" data-aos="fade-up" data-aos-delay="100">
                     <div class="project-image">
-                        <img src="hand_reading_AI.png" alt="Hand Reading AI">
+                        <img src="hand_reading_AI.png" alt="Hand Reading AI" loading="lazy" decoding="async">
                         <div class="project-overlay">
                             <div class="project-links">
-                                <a href="https://github.com/RandomEdge999/hand-reading-ai" target="_blank" class="project-link">
+                                <a href="https://github.com/RandomEdge999/hand-reading-ai" target="_blank" rel="noopener noreferrer" class="project-link" aria-label="View Hand Reading AI code on GitHub">
                                     <i class="fab fa-github"></i>
                                     <span class="link-tooltip">View Code</span>
                                 </a>
@@ -326,10 +338,10 @@
                 </div>
                 <div class="project-card modern-card" data-category="data" data-aos="fade-up" data-aos-delay="200">
                     <div class="project-image">
-                        <img src="city_pulse.png" alt="City Pulse — Real Time City Analytics">
+                        <img src="city_pulse.png" alt="City Pulse — Real Time City Analytics" loading="lazy" decoding="async">
                         <div class="project-overlay">
                             <div class="project-links">
-                                <a href="https://github.com/RandomEdge999/City-Pulse" target="_blank" class="project-link">
+                                <a href="https://github.com/RandomEdge999/City-Pulse" target="_blank" rel="noopener noreferrer" class="project-link" aria-label="View City Pulse code on GitHub">
                                     <i class="fab fa-github"></i>
                                     <span class="link-tooltip">View Code</span>
                                 </a>
@@ -375,17 +387,29 @@
                     </div>
                 </div>
 
-                <div class="project-card" data-aos="fade-up" data-aos-delay="200">
+                <div class="project-card modern-card" data-category="web" data-aos="fade-up" data-aos-delay="200">
                     <div class="project-image">
-                        <img src="teacher_eval_sys.png" alt="Teacher Evaluator System">
+                        <img src="teacher_eval_sys.png" alt="Teacher Evaluator System" loading="lazy" decoding="async">
                         <div class="project-overlay">
                             <div class="project-links">
-                                <a href="https://github.com/RandomEdge999/Teacher-Evaluation-System" target="_blank" class="project-link"><i class="fab fa-github"></i></a>
+                                <a href="https://github.com/RandomEdge999/Teacher-Evaluation-System" target="_blank" rel="noopener noreferrer" class="project-link" aria-label="View Teacher Evaluator System code on GitHub">
+                                    <i class="fab fa-github"></i>
+                                    <span class="link-tooltip">View Code</span>
+                                </a>
                             </div>
+                        </div>
+                        <div class="project-badge">
+                            <span class="badge-text">Web</span>
                         </div>
                     </div>
                     <div class="project-content">
-                        <h3 class="project-title">Teacher Evaluator System</h3>
+                        <div class="project-header">
+                            <h3 class="project-title">Teacher Evaluator System</h3>
+                            <div class="project-status">
+                                <span class="status-dot"></span>
+                                <span class="status-text">Completed</span>
+                            </div>
+                        </div>
                         <p class="project-description">
                             Teacher Evaluation System is a web-based educator assessment platform: 
                             it records real-time classroom observations, generates performance reports, 
@@ -401,21 +425,34 @@
                     </div>
                 </div>
 
-                <div class="project-card" data-aos="fade-up" data-aos-delay="200">
+                <div class="project-card modern-card" data-category="ai" data-aos="fade-up" data-aos-delay="200">
                     <div class="project-image">
-                        <img src="soccer_predictor_pro.png" alt="Soccer Predictor Pro">
+                        <img src="soccer_predictor_pro.png" alt="Soccer Predictor Pro" loading="lazy" decoding="async">
                         <div class="project-overlay">
                             <div class="project-links">
-                                <a href="https://github.com/RandomEdge999/Soccer-Predictor-Pro" target="_blank" class="project-link"><i class="fab fa-github"></i></a>
+                                <a href="https://github.com/RandomEdge999/Soccer-Predictor-Pro" target="_blank" rel="noopener noreferrer" class="project-link" aria-label="View Soccer Predictor Pro code on GitHub">
+                                    <i class="fab fa-github"></i>
+                                    <span class="link-tooltip">View Code</span>
+                                </a>
                             </div>
+                        </div>
+                        <div class="project-badge">
+                            <span class="badge-text">AI/ML</span>
                         </div>
                     </div>
                     <div class="project-content">
-                        <h3 class="project-title">Soccer Predictor Pro</h3>
+                        <div class="project-header">
+                            <h3 class="project-title">Soccer Predictor Pro</h3>
+                            <div class="project-status">
+                                <span class="status-dot"></span>
+                                <span class="status-text">Completed</span>
+                            </div>
+                        </div>
                         <p class="project-description">
                             Soccer Predictor Pro is an end-to-end ML app that scrapes fixtures and odds, 
                             engineers rolling features, and serves calibrated win–draw–loss probabilities and expected goals via a Flask API and lightweight UI, 
                             with weekly retraining, Docker, and cached responses under 200 ms.
+                        </p>
                         <div class="project-tech">
                             <span class="tech-tag">Python</span>
                             <span class="tech-tag">Flask</span>
@@ -425,17 +462,29 @@
                     </div>
                 </div>
 
-                <div class="project-card" data-aos="fade-up" data-aos-delay="200">
+                <div class="project-card modern-card" data-category="ai" data-aos="fade-up" data-aos-delay="200">
                     <div class="project-image">
-                        <img src="ai_social_mirror.png" alt="AI Social Mirror">
+                        <img src="ai_social_mirror.png" alt="AI Social Mirror" loading="lazy" decoding="async">
                         <div class="project-overlay">
                             <div class="project-links">
-                                <a href="https://github.com/RandomEdge999/ai-social-mirror" target="_blank" class="project-link"><i class="fab fa-github"></i></a>
+                                <a href="https://github.com/RandomEdge999/ai-social-mirror" target="_blank" rel="noopener noreferrer" class="project-link" aria-label="View AI Social Mirror code on GitHub">
+                                    <i class="fab fa-github"></i>
+                                    <span class="link-tooltip">View Code</span>
+                                </a>
                             </div>
+                        </div>
+                        <div class="project-badge">
+                            <span class="badge-text">AI/ML</span>
                         </div>
                     </div>
                     <div class="project-content">
-                        <h3 class="project-title">AI Social Mirror</h3>
+                        <div class="project-header">
+                            <h3 class="project-title">AI Social Mirror</h3>
+                            <div class="project-status">
+                                <span class="status-dot"></span>
+                                <span class="status-text">Completed</span>
+                            </div>
+                        </div>
                         <p class="project-description">
                             AI Social Mirror is an AI-powered web application for analyzing tone, sentiment, 
                             and intent across social posts, bios, and emails: it processes user input with Hugging Face Transformers, 
@@ -451,17 +500,29 @@
                     </div>
                 </div>
 
-                <div class="project-card" data-aos="fade-up" data-aos-delay="300">
+                <div class="project-card modern-card" data-category="ai" data-aos="fade-up" data-aos-delay="300">
                     <div class="project-image">
-                        <img src="yonsei-university.png" alt="Neural Network Framework">
+                        <img src="yonsei-university.png" alt="Neural Network Framework" loading="lazy" decoding="async">
                         <div class="project-overlay">
                             <div class="project-links">
-                                <a href="#" class="project-link"><i class="fas fa-external-link-alt"></i></a>
+                                <a href="#" class="project-link" aria-label="Open project page">
+                                    <i class="fas fa-external-link-alt"></i>
+                                    <span class="link-tooltip">Project Page</span>
+                                </a>
                             </div>
+                        </div>
+                        <div class="project-badge">
+                            <span class="badge-text">AI/ML</span>
                         </div>
                     </div>
                     <div class="project-content">
-                        <h3 class="project-title">Image Classification Neural Network Framework</h3>
+                        <div class="project-header">
+                            <h3 class="project-title">Image Classification Neural Network Framework</h3>
+                            <div class="project-status">
+                                <span class="status-dot"></span>
+                                <span class="status-text">Completed</span>
+                            </div>
+                        </div>
                         <p class="project-description">
                             Developed a fully modular neural network framework from scratch in Python, 
                             implementing computational graphs, backpropagation, 
@@ -476,17 +537,29 @@
                     </div>
                 </div>
 
-                <div class="project-card" data-aos="fade-up" data-aos-delay="400">
+                <div class="project-card modern-card" data-category="ai" data-aos="fade-up" data-aos-delay="400">
                     <div class="project-image">
-                        <img src="yonsei-university.png" alt="Cancer Cell Detection">
+                        <img src="yonsei-university.png" alt="Cancer Cell Detection" loading="lazy" decoding="async">
                         <div class="project-overlay">
                             <div class="project-links">
-                                <a href="#" class="project-link"><i class="fas fa-external-link-alt"></i></a>
+                                <a href="#" class="project-link" aria-label="Open project page">
+                                    <i class="fas fa-external-link-alt"></i>
+                                    <span class="link-tooltip">Project Page</span>
+                                </a>
                             </div>
+                        </div>
+                        <div class="project-badge">
+                            <span class="badge-text">AI/ML</span>
                         </div>
                     </div>
                     <div class="project-content">
-                        <h3 class="project-title">Cancer Cell Detection with Computer Vision</h3>
+                        <div class="project-header">
+                            <h3 class="project-title">Cancer Cell Detection with Computer Vision</h3>
+                            <div class="project-status">
+                                <span class="status-dot"></span>
+                                <span class="status-text">Completed</span>
+                            </div>
+                        </div>
                         <p class="project-description">
                             Developed computer vision algorithms for biomedical imaging, 
                             implementing edge detection, feature extraction,
@@ -501,17 +574,29 @@
                     </div>
                 </div>
 
-                <div class="project-card" data-aos="fade-up" data-aos-delay="500">
+                <div class="project-card modern-card" data-category="software" data-aos="fade-up" data-aos-delay="500">
                     <div class="project-image">
-                        <img src="git.png" alt="Git Client">
+                        <img src="git.png" alt="Git Client" loading="lazy" decoding="async">
                         <div class="project-overlay">
                             <div class="project-links">
-                                <a href="https://github.com/RandomEdge999/Git-Client" target="_blank" class="project-link"><i class="fab fa-github"></i></a>
+                                <a href="https://github.com/RandomEdge999/Git-Client" target="_blank" rel="noopener noreferrer" class="project-link" aria-label="View Simplified Git Client code on GitHub">
+                                    <i class="fab fa-github"></i>
+                                    <span class="link-tooltip">View Code</span>
+                                </a>
                             </div>
+                        </div>
+                        <div class="project-badge">
+                            <span class="badge-text">Software</span>
                         </div>
                     </div>
                     <div class="project-content">
-                        <h3 class="project-title">Simplified Git Client in Python</h3>
+                        <div class="project-header">
+                            <h3 class="project-title">Simplified Git Client in Python</h3>
+                            <div class="project-status">
+                                <span class="status-dot"></span>
+                                <span class="status-text">Completed</span>
+                            </div>
+                        </div>
                         <p class="project-description">
                             Developed a simplified Git Client replicating essential version control features. 
                             Implemented repository management, staging, committing, and secure SSH integration.
@@ -525,17 +610,29 @@
                     </div>
                 </div>
 
-                <div class="project-card" data-aos="fade-up" data-aos-delay="600">
+                <div class="project-card modern-card" data-category="vr" data-aos="fade-up" data-aos-delay="600">
                     <div class="project-image">
-                        <img src="Rhodes_College_seal.svg.png" alt="Escape Room VR">
+                        <img src="Rhodes_College_seal.svg.png" alt="Escape Room VR" loading="lazy" decoding="async">
                         <div class="project-overlay">
                             <div class="project-links">
-                                <a href="#" class="project-link"><i class="fas fa-external-link-alt"></i></a>
+                                <a href="#" class="project-link" aria-label="Open project page">
+                                    <i class="fas fa-external-link-alt"></i>
+                                    <span class="link-tooltip">Project Page</span>
+                                </a>
                             </div>
+                        </div>
+                        <div class="project-badge">
+                            <span class="badge-text">VR / 3D</span>
                         </div>
                     </div>
                     <div class="project-content">
-                        <h3 class="project-title">Escape Room VR Game</h3>
+                        <div class="project-header">
+                            <h3 class="project-title">Escape Room VR Game</h3>
+                            <div class="project-status">
+                                <span class="status-dot"></span>
+                                <span class="status-text">Completed</span>
+                            </div>
+                        </div>
                         <p class="project-description">
                             Developed an immersive VR escape room game in Unity with interactive puzzles and custom 3D objects. 
                             Received positive feedback from VR professionals and playtesters.
@@ -549,17 +646,29 @@
                     </div>
                 </div>
 
-                <div class="project-card" data-aos="fade-up" data-aos-delay="700">
+                <div class="project-card modern-card" data-category="web" data-aos="fade-up" data-aos-delay="700">
                     <div class="project-image">
-                        <img src="bloodbanl.pk.jpg" alt="BloodBank.pk">
+                        <img src="bloodbanl.pk.jpg" alt="BloodBank.pk" loading="lazy" decoding="async">
                         <div class="project-overlay">
                             <div class="project-links">
-                                <a href="#" class="project-link"><i class="fas fa-external-link-alt"></i></a>
+                                <a href="#" class="project-link" aria-label="Open project page">
+                                    <i class="fas fa-external-link-alt"></i>
+                                    <span class="link-tooltip">Project Page</span>
+                                </a>
                             </div>
+                        </div>
+                        <div class="project-badge">
+                            <span class="badge-text">Web</span>
                         </div>
                     </div>
                     <div class="project-content">
-                        <h3 class="project-title">BloodBank.pk</h3>
+                        <div class="project-header">
+                            <h3 class="project-title">BloodBank.pk</h3>
+                            <div class="project-status">
+                                <span class="status-dot"></span>
+                                <span class="status-text">Completed</span>
+                            </div>
+                        </div>
                         <p class="project-description">
                             Developed a website connecting patients with blood donors based on location and blood type. 
                             Built with WordPress, featuring location-based search and filtering capabilities.
@@ -573,17 +682,29 @@
                     </div>
                 </div>
 
-                <div class="project-card" data-aos="fade-up" data-aos-delay="800">
+                <div class="project-card modern-card" data-category="ai" data-aos="fade-up" data-aos-delay="800">
                     <div class="project-image">
-                        <img src="chatbot.png" alt="Chatbot for LMS">
+                        <img src="chatbot.png" alt="Chatbot for LMS" loading="lazy" decoding="async">
                         <div class="project-overlay">
                             <div class="project-links">
-                                <a href="#" class="project-link"><i class="fas fa-external-link-alt"></i></a>
+                                <a href="#" class="project-link" aria-label="Open project page">
+                                    <i class="fas fa-external-link-alt"></i>
+                                    <span class="link-tooltip">Project Page</span>
+                                </a>
                             </div>
+                        </div>
+                        <div class="project-badge">
+                            <span class="badge-text">AI/ML</span>
                         </div>
                     </div>
                     <div class="project-content">
-                        <h3 class="project-title">Chatbot for LMS</h3>
+                        <div class="project-header">
+                            <h3 class="project-title">Chatbot for LMS</h3>
+                            <div class="project-status">
+                                <span class="status-dot"></span>
+                                <span class="status-text">Completed</span>
+                            </div>
+                        </div>
                         <p class="project-description">
                             Developed an NLP-powered chatbot achieving 90% accuracy in customer inquiry interpretation. 
                             Automated 70% of customer service queries, reducing support costs significantly.
@@ -921,19 +1042,23 @@
                     <p>&copy; 2025 Muhammad Aleem Azhar. All rights reserved.</p>
                 </div>
                 <div class="footer-social">
-                    <a href="https://www.linkedin.com/in/m-aleem-azhar" target="_blank">
+                    <a href="https://www.linkedin.com/in/m-aleem-azhar" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
                         <i class="fab fa-linkedin"></i>
                     </a>
-                    <a href="https://github.com/RandomEdge999" target="_blank">
+                    <a href="https://github.com/RandomEdge999" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
                         <i class="fab fa-github"></i>
                     </a>
-                    <a href="mailto:azhmu-26@rhodes.edu">
+                    <a href="mailto:azhmu-26@rhodes.edu" aria-label="Email">
                         <i class="fas fa-envelope"></i>
                     </a>
                 </div>
             </div>
         </div>
     </footer>
+
+    <button id="backToTop" class="back-to-top" aria-label="Back to top">
+        <i class="fas fa-arrow-up"></i>
+    </button>
 
     <!-- Scripts -->
     <script src="https://unpkg.com/aos@next/dist/aos.js"></script>

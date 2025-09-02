@@ -358,31 +358,32 @@ function initResumeDropdown() {
     }
 }
 
-// Modern enhancements functionality
 function initModernFeatures() {
-    // Theme toggle functionality
-    const themeToggle = document.getElementById('themeToggle');
-    if (themeToggle) {
-        themeToggle.addEventListener('click', () => {
-            document.body.classList.toggle('dark-theme');
-            const icon = themeToggle.querySelector('i');
-            icon.classList.toggle('fa-moon');
-            icon.classList.toggle('fa-sun');
-        });
-    }
+    // Theme removed
 
-    // Navigation progress bar
-    function updateProgressBar() {
-        const progressBar = document.querySelector('.progress-bar');
-        if (progressBar) {
-            const scrollTop = window.pageYOffset;
-            const docHeight = document.body.scrollHeight - window.innerHeight;
-            const scrollPercent = (scrollTop / docHeight) * 100;
-            progressBar.style.width = scrollPercent + '%';
+    // Navigation progress bar + scroll indicator (throttled with rAF)
+    let ticking = false;
+    function onScroll() {
+        if (!ticking) {
+            window.requestAnimationFrame(() => {
+                const progressBar = document.querySelector('.progress-bar');
+                if (progressBar) {
+                    const scrollTop = window.pageYOffset;
+                    const docHeight = Math.max(1, document.body.scrollHeight - window.innerHeight);
+                    const scrollPercent = (scrollTop / docHeight) * 100;
+                    progressBar.style.width = scrollPercent + '%';
+                }
+                const scrollIndicator = document.querySelector('.modern-scroll');
+                if (scrollIndicator) {
+                    const pct = (window.pageYOffset / (document.body.scrollHeight - window.innerHeight)) * 100;
+                    scrollIndicator.style.opacity = pct > 10 ? '0' : '1';
+                }
+                ticking = false;
+            });
+            ticking = true;
         }
     }
-
-    window.addEventListener('scroll', updateProgressBar);
+    window.addEventListener('scroll', onScroll, { passive: true });
 
     // Project filtering
     const filterBtns = document.querySelectorAll('.filter-btn');
@@ -396,37 +397,52 @@ function initModernFeatures() {
             btn.classList.add('active');
 
             const filter = btn.getAttribute('data-filter');
+            const grid = document.querySelector('.projects-grid');
+            if (grid) grid.style.minHeight = grid.offsetHeight + 'px';
 
             projectCards.forEach(card => {
-                if (filter === 'all' || card.getAttribute('data-category') === filter) {
+                const match = filter === 'all' || card.getAttribute('data-category') === filter;
+                if (match) {
                     card.style.display = 'block';
-                    card.style.animation = 'fadeInUp 0.5s ease';
+                    card.style.opacity = '0';
+                    requestAnimationFrame(() => {
+                        card.style.animation = 'fadeInUp 0.35s ease forwards';
+                        card.style.opacity = '1';
+                    });
                 } else {
-                    card.style.display = 'none';
+                    card.style.animation = '';
+                    card.style.opacity = '0';
+                    setTimeout(() => { card.style.display = 'none'; }, 150);
                 }
             });
+
+            setTimeout(() => { if (grid) grid.style.minHeight = ''; }, 300);
         });
     });
 
     // Animated counters
+    function animateSingleCounter(counter) {
+        if (!counter || counter.getAttribute('data-animated') === 'true') return;
+        const target = parseInt(counter.getAttribute('data-count'));
+        if (isNaN(target)) return;
+        const duration = 1200;
+        const increment = Math.max(1, Math.ceil(target / (duration / 16)));
+        let current = 0;
+        const timer = setInterval(() => {
+            current += increment;
+            if (current >= target) {
+                current = target;
+                clearInterval(timer);
+            }
+            const suffix = counter.getAttribute('data-suffix') || '';
+            counter.textContent = Math.floor(current) + suffix;
+        }, 16);
+        counter.setAttribute('data-animated', 'true');
+    }
+
     function animateCounters() {
         const counters = document.querySelectorAll('.stat-number[data-count]');
-        
-        counters.forEach(counter => {
-            const target = parseInt(counter.getAttribute('data-count'));
-            const duration = 2000;
-            const increment = target / (duration / 16);
-            let current = 0;
-
-            const timer = setInterval(() => {
-                current += increment;
-                if (current >= target) {
-                    current = target;
-                    clearInterval(timer);
-                }
-                counter.textContent = Math.floor(current);
-            }, 16);
-        });
+        counters.forEach(animateSingleCounter);
     }
 
     // Intersection Observer for animations
@@ -440,9 +456,10 @@ function initModernFeatures() {
             if (entry.isIntersecting) {
                 entry.target.classList.add('animate');
                 
-                // Trigger counter animation for hero stats
-                if (entry.target.classList.contains('hero-stats')) {
-                    animateCounters();
+                // Trigger counter animation
+                if (entry.target.classList.contains('hero-stats')) animateCounters();
+                if (entry.target.classList.contains('stat-number') && entry.target.getAttribute('data-count')) {
+                    animateSingleCounter(entry.target);
                 }
                 
                 // Trigger skill bar animations
@@ -457,24 +474,21 @@ function initModernFeatures() {
     }, observerOptions);
 
     // Observe elements for animations
-    document.querySelectorAll('.stat-number[data-count], .skill-progress, .hero-stats').forEach(el => {
+    document.querySelectorAll('.stat-number[data-count], .skill-progress, .hero-stats, .stat-item').forEach(el => {
         observer.observe(el);
     });
 
-    // Enhanced scroll indicator
-    function updateScrollIndicator() {
-        const scrollIndicator = document.querySelector('.modern-scroll');
-        if (scrollIndicator) {
-            const scrollPercent = (window.pageYOffset / (document.body.scrollHeight - window.innerHeight)) * 100;
-            if (scrollPercent > 10) {
-                scrollIndicator.style.opacity = '0';
-            } else {
-                scrollIndicator.style.opacity = '1';
-            }
-        }
-    }
+    // Fallback: trigger counters shortly after load in case observer doesn't fire at top
+    setTimeout(() => {
+        const heroStats = document.querySelector('.hero-stats');
+        if (heroStats) animateCounters();
+        document.querySelectorAll('.stat-item').forEach(item => {
+            item.style.opacity = '1';
+            item.style.transform = 'translateY(0)';
+        });
+    }, 600);
 
-    window.addEventListener('scroll', updateScrollIndicator);
+    // Note: scroll indicator handled in onScroll()
 
     // Modern button hover effects
     document.querySelectorAll('.modern-btn').forEach(btn => {
@@ -499,23 +513,22 @@ function initModernFeatures() {
     });
 
     // Parallax effect for hero background
-    function initParallaxEffect() {
-        window.addEventListener('scroll', () => {
-            const scrolled = window.pageYOffset;
-            const heroParticles = document.querySelector('.hero-particles');
-            const heroGradient = document.querySelector('.hero-gradient');
-            
-            if (heroParticles) {
-                heroParticles.style.transform = `translateY(${scrolled * 0.5}px)`;
-            }
-            
-            if (heroGradient) {
-                heroGradient.style.transform = `translateY(${scrolled * 0.3}px)`;
-            }
-        });
+    // Lightweight parallax using rAF-throttled scroll
+    let parallaxTick = false;
+    function parallaxOnScroll() {
+        if (!parallaxTick) {
+            window.requestAnimationFrame(() => {
+                const scrolled = window.pageYOffset;
+                const heroParticles = document.querySelector('.hero-particles');
+                const heroGradient = document.querySelector('.hero-gradient');
+                if (heroParticles) heroParticles.style.transform = `translateY(${scrolled * 0.3}px)`;
+                if (heroGradient) heroGradient.style.transform = `translateY(${scrolled * 0.15}px)`;
+                parallaxTick = false;
+            });
+            parallaxTick = true;
+        }
     }
-
-    initParallaxEffect();
+    window.addEventListener('scroll', parallaxOnScroll, { passive: true });
 
     // Typing animation for hero text
     function initTypingAnimation() {
@@ -553,6 +566,19 @@ document.addEventListener('DOMContentLoaded', () => {
     createParticles();
     initResumeDropdown();
     initModernFeatures();
+
+    // Theme removed
+
+    // Back to top button
+    const backToTop = document.getElementById('backToTop');
+    if (backToTop) {
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 400) backToTop.classList.add('show'); else backToTop.classList.remove('show');
+        });
+        backToTop.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    }
     
     // Add typing effect to hero title (optional)
     const heroTitle = document.querySelector('.hero-title .name');
@@ -577,21 +603,13 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Add scroll-triggered animations for stats
     const stats = document.querySelectorAll('.stat-number');
-    const statsObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const stat = entry.target;
-                const finalValue = stat.textContent;
-                const numericValue = parseInt(finalValue);
-                
-                if (!isNaN(numericValue)) {
-                    animateNumber(stat, 0, numericValue, 2000);
-                }
-            }
+    // Remove old number animation in favor of consistent counter
+    if (stats.length) {
+        stats.forEach(stat => {
+            if (stat.getAttribute('data-count')) return; // counters handled elsewhere
+            // fallback: keep original text
         });
-    }, { threshold: 0.5 });
-    
-    stats.forEach(stat => statsObserver.observe(stat));
+    }
 });
 
 // Number animation function
