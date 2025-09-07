@@ -13,6 +13,7 @@ const hamburger = document.querySelector('.hamburger');
 const navMenu = document.querySelector('.nav-menu');
 const navLinks = document.querySelectorAll('.nav-link');
 const contactForm = document.getElementById('contactForm');
+const heroEmail = document.getElementById('heroEmail');
 const navbar = document.querySelector('.navbar');
 
 // Mobile Navigation Toggle
@@ -87,48 +88,46 @@ window.addEventListener('scroll', () => {
 
 // Contact Form Handling
 if (contactForm) {
-    contactForm.addEventListener('submit', async (e) => {
+    contactForm.addEventListener('submit', (e) => {
         e.preventDefault();
-        
+
         // Get form data
         const formData = new FormData(contactForm);
         const name = formData.get('name');
         const email = formData.get('email');
         const subject = formData.get('subject');
         const message = formData.get('message');
-        
+
         // Basic validation
         if (!name || !email || !subject || !message) {
             showNotification('Please fill in all fields', 'error');
             return;
         }
-        
+
         if (!isValidEmail(email)) {
             showNotification('Please enter a valid email address', 'error');
             return;
         }
-        
-        // Show loading state
-        const submitBtn = contactForm.querySelector('button[type="submit"]');
-        const originalText = submitBtn.innerHTML;
-        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
-        submitBtn.disabled = true;
-        
-        try {
-            // Simulate form submission (replace with actual backend integration)
-            await new Promise(resolve => setTimeout(resolve, 2000));
-            
-            // Success
-            showNotification('Message sent successfully! I\'ll get back to you soon.', 'success');
-            contactForm.reset();
-            
-        } catch (error) {
-            showNotification('Failed to send message. Please try again.', 'error');
-        } finally {
-            // Reset button state
-            submitBtn.innerHTML = originalText;
-            submitBtn.disabled = false;
-        }
+
+        const body = `Name: ${name}
+Email: ${email}
+
+${message}`;
+        const mailto = `mailto:aleemazhar14@gmail.com?subject=${encodeURIComponent(subject + ' - from ' + name)}&body=${encodeURIComponent(body)}`;
+        window.location.href = mailto;
+        showNotification('Opening your email client...', 'success');
+        contactForm.reset();
+    });
+}
+
+if (heroEmail) {
+    heroEmail.addEventListener('click', (e) => {
+        e.preventDefault();
+        const email = 'aleemazhar14@gmail.com';
+        navigator.clipboard.writeText(email)
+            .then(() => showNotification('Email address copied to clipboard!', 'success'))
+            .catch(() => {});
+        window.location.href = `mailto:${email}`;
     });
 }
 
