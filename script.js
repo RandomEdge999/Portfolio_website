@@ -331,32 +331,68 @@ document.head.appendChild(style);
 
 // Resume dropdown functionality
 function initResumeDropdown() {
-    const resumeBtn = document.getElementById('resumeBtn');
-    const resumeOptions = document.getElementById('resumeOptions');
+    // Navigation resume dropdown
+    const navResumeBtn = document.getElementById('navResumeBtn');
+    const navResumeOptions = document.getElementById('navResumeOptions');
     
-    if (resumeBtn && resumeOptions) {
+    if (navResumeBtn && navResumeOptions) {
         // Toggle dropdown on button click
-        resumeBtn.addEventListener('click', (e) => {
+        navResumeBtn.addEventListener('click', (e) => {
             e.stopPropagation();
-            resumeOptions.classList.toggle('active');
-            resumeBtn.classList.toggle('active');
+            navResumeOptions.classList.toggle('active');
+            navResumeBtn.classList.toggle('active');
         });
         
         // Close dropdown when clicking outside
         document.addEventListener('click', (e) => {
-            if (!resumeBtn.contains(e.target) && !resumeOptions.contains(e.target)) {
-                resumeOptions.classList.remove('active');
-                resumeBtn.classList.remove('active');
+            if (!navResumeBtn.contains(e.target) && !navResumeOptions.contains(e.target)) {
+                navResumeOptions.classList.remove('active');
+                navResumeBtn.classList.remove('active');
             }
         });
         
         // Handle resume option clicks
-        const resumeOptionLinks = resumeOptions.querySelectorAll('.resume-option');
-        resumeOptionLinks.forEach(link => {
+        const navResumeOptionLinks = navResumeOptions.querySelectorAll('.nav-resume-option');
+        navResumeOptionLinks.forEach(link => {
             link.addEventListener('click', (e) => {
                 // Close dropdown after selection
-                resumeOptions.classList.remove('active');
-                resumeBtn.classList.remove('active');
+                navResumeOptions.classList.remove('active');
+                navResumeBtn.classList.remove('active');
+                
+                // Optional: Show a brief notification
+                const resumeType = link.querySelector('span').textContent;
+                showNotification(`Downloading ${resumeType}...`, 'info');
+            });
+        });
+    }
+
+    // Hero resume dropdown
+    const heroResumeBtn = document.getElementById('heroResumeBtn');
+    const heroResumeOptions = document.getElementById('heroResumeOptions');
+    
+    if (heroResumeBtn && heroResumeOptions) {
+        // Toggle dropdown on button click
+        heroResumeBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            heroResumeOptions.classList.toggle('active');
+            heroResumeBtn.classList.toggle('active');
+        });
+        
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!heroResumeBtn.contains(e.target) && !heroResumeOptions.contains(e.target)) {
+                heroResumeOptions.classList.remove('active');
+                heroResumeBtn.classList.remove('active');
+            }
+        });
+        
+        // Handle resume option clicks
+        const heroResumeOptionLinks = heroResumeOptions.querySelectorAll('.hero-resume-option');
+        heroResumeOptionLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                // Close dropdown after selection
+                heroResumeOptions.classList.remove('active');
+                heroResumeBtn.classList.remove('active');
                 
                 // Optional: Show a brief notification
                 const resumeType = link.querySelector('span').textContent;
@@ -574,6 +610,8 @@ document.addEventListener('DOMContentLoaded', () => {
     createParticles();
     initResumeDropdown();
     initModernFeatures();
+    initMobileMenu();
+    initMobileOptimizations();
 
     // Theme removed
 
@@ -715,24 +753,49 @@ document.addEventListener('keydown', (e) => {
     }
 });
 
-// Add touch gestures for mobile
+// Enhanced mobile touch interactions
 let touchStartY = 0;
 let touchEndY = 0;
+let touchStartX = 0;
+let touchEndX = 0;
+let isScrolling = false;
 
 document.addEventListener('touchstart', (e) => {
     touchStartY = e.changedTouches[0].screenY;
-});
+    touchStartX = e.changedTouches[0].screenX;
+    isScrolling = false;
+}, { passive: true });
+
+document.addEventListener('touchmove', (e) => {
+    if (!isScrolling) {
+        const touchY = e.changedTouches[0].screenY;
+        const touchX = e.changedTouches[0].screenX;
+        const diffY = Math.abs(touchY - touchStartY);
+        const diffX = Math.abs(touchX - touchStartX);
+        
+        // Determine if this is a vertical or horizontal scroll
+        if (diffY > diffX) {
+            isScrolling = true;
+        }
+    }
+}, { passive: true });
 
 document.addEventListener('touchend', (e) => {
     touchEndY = e.changedTouches[0].screenY;
-    handleSwipe();
-});
+    touchEndX = e.changedTouches[0].screenX;
+    
+    if (isScrolling) {
+        handleSwipe();
+    }
+}, { passive: true });
 
 function handleSwipe() {
     const swipeThreshold = 50;
-    const diff = touchStartY - touchEndY;
+    const diffY = touchStartY - touchEndY;
+    const diffX = touchStartX - touchEndX;
     
-    if (Math.abs(diff) > swipeThreshold) {
+    // Only handle vertical swipes
+    if (Math.abs(diffY) > Math.abs(diffX) && Math.abs(diffY) > swipeThreshold) {
         const sections = Array.from(document.querySelectorAll('section'));
         const currentSection = sections.find(section => {
             const rect = section.getBoundingClientRect();
@@ -743,7 +806,7 @@ function handleSwipe() {
             const currentIndex = sections.indexOf(currentSection);
             let targetIndex;
             
-            if (diff > 0) { // Swipe up
+            if (diffY > 0) { // Swipe up
                 targetIndex = Math.min(currentIndex + 1, sections.length - 1);
             } else { // Swipe down
                 targetIndex = Math.max(currentIndex - 1, 0);
@@ -758,4 +821,74 @@ function handleSwipe() {
             });
         }
     }
+}
+
+// Mobile menu improvements
+function initMobileMenu() {
+    const hamburger = document.querySelector('.hamburger');
+    const navMenu = document.querySelector('.nav-menu');
+    
+    if (hamburger && navMenu) {
+        // Close menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!hamburger.contains(e.target) && !navMenu.contains(e.target)) {
+                hamburger.classList.remove('active');
+                hamburger.setAttribute('aria-expanded', 'false');
+                navMenu.classList.remove('active');
+            }
+        });
+        
+        // Close menu on escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && navMenu.classList.contains('active')) {
+                hamburger.classList.remove('active');
+                hamburger.setAttribute('aria-expanded', 'false');
+                navMenu.classList.remove('active');
+            }
+        });
+        
+        // Prevent body scroll when menu is open
+        hamburger.addEventListener('click', () => {
+            if (navMenu.classList.contains('active')) {
+                document.body.style.overflow = 'hidden';
+            } else {
+                document.body.style.overflow = '';
+            }
+        });
+    }
+}
+
+// Mobile performance optimizations
+function initMobileOptimizations() {
+    // Reduce animations on mobile for better performance
+    if (window.innerWidth <= 768) {
+        // Disable some heavy animations on mobile
+        const style = document.createElement('style');
+        style.textContent = `
+            .floating-icon {
+                animation: none !important;
+            }
+            .hero-particles {
+                animation: none !important;
+            }
+            .glitch-text {
+                animation: none !important;
+            }
+        `;
+        document.head.appendChild(style);
+    }
+    
+    // Optimize scroll performance
+    let ticking = false;
+    function updateScrollPosition() {
+        // Add any scroll-based optimizations here
+        ticking = false;
+    }
+    
+    window.addEventListener('scroll', () => {
+        if (!ticking) {
+            requestAnimationFrame(updateScrollPosition);
+            ticking = true;
+        }
+    }, { passive: true });
 }

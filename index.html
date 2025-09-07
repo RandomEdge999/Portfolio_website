@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
             <title>Muhammad Aleem Azhar - AI & Data Science Portfolio</title>
     <meta name="description" content="Portfolio of Muhammad Aleem Azhar — AI & Data Science specialist building intelligent, data-driven applications and modern software products.">
     <meta name="theme-color" content="#6366f1">
@@ -68,10 +68,31 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="resume_ml_ai.pdf" class="nav-link modern-nav-link" target="_blank" rel="noopener">
-                        <span class="nav-text">Resume</span>
-                        <div class="nav-indicator"></div>
-                    </a>
+                    <div class="nav-resume-dropdown">
+                        <button class="nav-resume-btn modern-nav-link" id="navResumeBtn">
+                            <span class="nav-text">Resume</span>
+                            <i class="fas fa-chevron-down nav-chevron"></i>
+                            <div class="nav-indicator"></div>
+                        </button>
+                        <div class="nav-resume-options" id="navResumeOptions">
+                            <a href="resume_ml_ai.pdf" download class="nav-resume-option">
+                                <i class="fas fa-brain"></i>
+                                <span>ML & AI Resume</span>
+                            </a>
+                            <a href="resume_software_eng.pdf" download class="nav-resume-option">
+                                <i class="fas fa-code"></i>
+                                <span>Software Engineering Resume</span>
+                            </a>
+                            <a href="resume_it_audit_consulting.pdf" download class="nav-resume-option">
+                                <i class="fas fa-shield-alt"></i>
+                                <span>IT Audit & Consulting Resume</span>
+                            </a>
+                            <a href="resume_product_manager.pdf" download class="nav-resume-option">
+                                <i class="fas fa-tasks"></i>
+                                <span>Product Manager Resume</span>
+                            </a>
+                        </div>
+                    </div>
                 </li>
                 <li class="nav-item">
                     <a href="#contact" class="nav-link modern-nav-link">
@@ -135,11 +156,32 @@
                         </div>
                     </div>
                     <div class="hero-buttons">
-                        <a href="resume_ml_ai.pdf" class="btn btn-secondary modern-btn" target="_blank" rel="noopener">
-                            <span class="btn-text">Download Resume</span>
-                            <div class="btn-bg"></div>
-                            <i class="fas fa-file-arrow-down btn-icon"></i>
-                        </a>
+                        <div class="hero-resume-dropdown">
+                            <button class="btn btn-secondary modern-btn hero-resume-btn" id="heroResumeBtn">
+                                <span class="btn-text">Download Resume</span>
+                                <div class="btn-bg"></div>
+                                <i class="fas fa-file-arrow-down btn-icon"></i>
+                                <i class="fas fa-chevron-down hero-chevron"></i>
+                            </button>
+                            <div class="hero-resume-options" id="heroResumeOptions">
+                                <a href="resume_ml_ai.pdf" download class="hero-resume-option">
+                                    <i class="fas fa-brain"></i>
+                                    <span>ML & AI Resume</span>
+                                </a>
+                                <a href="resume_software_eng.pdf" download class="hero-resume-option">
+                                    <i class="fas fa-code"></i>
+                                    <span>Software Engineering Resume</span>
+                                </a>
+                                <a href="resume_it_audit_consulting.pdf" download class="hero-resume-option">
+                                    <i class="fas fa-shield-alt"></i>
+                                    <span>IT Audit & Consulting Resume</span>
+                                </a>
+                                <a href="resume_product_manager.pdf" download class="hero-resume-option">
+                                    <i class="fas fa-tasks"></i>
+                                    <span>Product Manager Resume</span>
+                                </a>
+                            </div>
+                        </div>
                         <a href="#projects" class="btn btn-primary modern-btn">
                             <span class="btn-text">View My Work</span>
                             <div class="btn-bg"></div>
@@ -977,33 +1019,6 @@
                             <i class="fab fa-github"></i>
                             <span>GitHub</span>
                         </a>
-                        <div class="resume-selector">
-                            <div class="resume-dropdown">
-                                <button class="resume-btn" id="resumeBtn">
-                                    <i class="fas fa-download"></i>
-                                    <span>Download Resume</span>
-                                    <i class="fas fa-chevron-down"></i>
-                                </button>
-                                <div class="resume-options" id="resumeOptions">
-                                    <a href="resume_ml_ai.pdf" download class="resume-option">
-                                        <i class="fas fa-brain"></i>
-                                        <span>ML & AI Resume</span>
-                                    </a>
-                                    <a href="resume_software_eng.pdf" download class="resume-option">
-                                        <i class="fas fa-code"></i>
-                                        <span>Software Engineering Resume</span>
-                                    </a>
-                                    <a href="resume_it_audit_consulting.pdf" download class="resume-option">
-                                        <i class="fas fa-shield-alt"></i>
-                                        <span>IT Audit & Tech Consulting Resume</span>
-                                    </a>
-                                    <a href="resume_product_manager.pdf" download class="resume-option">
-                                        <i class="fas fa-tasks"></i>
-                                        <span>Product Manager Resume</span>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
                 <div class="contact-form" data-aos="fade-left">
