@@ -1,3 +1,5 @@
+"use strict";
+
 // Initialize AOS (Animate On Scroll)
 AOS.init({
     duration: 1000,
@@ -14,32 +16,38 @@ const contactForm = document.getElementById('contactForm');
 const navbar = document.querySelector('.navbar');
 
 // Mobile Navigation Toggle
-hamburger.addEventListener('click', () => {
-    hamburger.classList.toggle('active');
-    navMenu.classList.toggle('active');
-});
-
-// Close mobile menu when clicking on a link
-navLinks.forEach(link => {
-    link.addEventListener('click', () => {
-        hamburger.classList.remove('active');
-        navMenu.classList.remove('active');
+if (hamburger && navMenu) {
+    hamburger.addEventListener('click', () => {
+        const expanded = hamburger.getAttribute('aria-expanded') === 'true';
+        hamburger.setAttribute('aria-expanded', String(!expanded));
+        hamburger.classList.toggle('active');
+        navMenu.classList.toggle('active');
     });
-});
 
-// Smooth scrolling for navigation links
+    // Close mobile menu when clicking on a link
+    navLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            hamburger.classList.remove('active');
+            hamburger.setAttribute('aria-expanded', 'false');
+            navMenu.classList.remove('active');
+        });
+    });
+}
+
+// Smooth scrolling for internal navigation links only
 navLinks.forEach(link => {
     link.addEventListener('click', (e) => {
-        e.preventDefault();
         const targetId = link.getAttribute('href');
-        const targetSection = document.querySelector(targetId);
-        
-        if (targetSection) {
-            const offsetTop = targetSection.offsetTop - 70; // Account for fixed navbar
-            window.scrollTo({
-                top: offsetTop,
-                behavior: 'smooth'
-            });
+        if (targetId && targetId.startsWith('#')) {
+            e.preventDefault();
+            const targetSection = document.querySelector(targetId);
+            if (targetSection) {
+                const offsetTop = targetSection.offsetTop - 70; // Account for fixed navbar
+                window.scrollTo({
+                    top: offsetTop,
+                    behavior: 'smooth'
+                });
+            }
         }
     });
 });
@@ -671,8 +679,9 @@ window.addEventListener('load', () => {
 // Add keyboard navigation support
 document.addEventListener('keydown', (e) => {
     // Escape key to close mobile menu
-    if (e.key === 'Escape') {
+    if (e.key === 'Escape' && hamburger && navMenu) {
         hamburger.classList.remove('active');
+        hamburger.setAttribute('aria-expanded', 'false');
         navMenu.classList.remove('active');
     }
     

@@ -15,11 +15,14 @@
     <meta name="twitter:title" content="Muhammad Aleem Azhar - AI & Data Science Portfolio">
     <meta name="twitter:description" content="AI & Data Science specialist building intelligent, data-driven applications and modern software products.">
     <meta name="twitter:image" content="my_image.jpeg">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; script-src 'self' https://unpkg.com; connect-src 'self';">
     <link rel="icon" href="git.png" type="image/png">
     <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" crossorigin="anonymous" />
 </head>
 <body>
     <a class="skip-link" href="#home">Skip to main content</a>
@@ -65,6 +68,12 @@
                     </a>
                 </li>
                 <li class="nav-item">
+                    <a href="resume_ml_ai.pdf" class="nav-link modern-nav-link" target="_blank" rel="noopener">
+                        <span class="nav-text">Resume</span>
+                        <div class="nav-indicator"></div>
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a href="#contact" class="nav-link modern-nav-link">
                         <span class="nav-text">Contact</span>
                         <div class="nav-indicator"></div>
@@ -72,11 +81,11 @@
                 </li>
             </ul>
             <div class="nav-actions">
-                <div class="hamburger modern-hamburger">
+                <button class="hamburger modern-hamburger" aria-label="Toggle navigation" aria-expanded="false">
                     <span class="bar"></span>
                     <span class="bar"></span>
                     <span class="bar"></span>
-                </div>
+                </button>
             </div>
         </div>
         <div class="nav-progress">
@@ -108,8 +117,8 @@
                         <div class="typing-cursor"></div>
                     </div>
                     <p class="hero-description">
-                        Computer Science undergraduate at Rhodes College with deep passion for Artificial Intelligence and Data Science. 
-                        Specialized in building data-driven applications, creating intelligent systems, and developing real-world solutions.
+                        Computer Science undergraduate at Rhodes College passionate about Artificial Intelligence and Data Science.
+                        Specializes in building data-driven applications, intelligent systems, and real-world solutions.
                     </p>
                     <div class="hero-stats" data-aos="fade-up" data-aos-delay="200">
                         <div class="stat-item" data-aos="fade-up" data-aos-delay="250">
@@ -126,6 +135,11 @@
                         </div>
                     </div>
                     <div class="hero-buttons">
+                        <a href="resume_ml_ai.pdf" class="btn btn-secondary modern-btn" target="_blank" rel="noopener">
+                            <span class="btn-text">Download Resume</span>
+                            <div class="btn-bg"></div>
+                            <i class="fas fa-file-arrow-down btn-icon"></i>
+                        </a>
                         <a href="#projects" class="btn btn-primary modern-btn">
                             <span class="btn-text">View My Work</span>
                             <div class="btn-bg"></div>
@@ -155,7 +169,7 @@
                 <div class="hero-image" data-aos="fade-left">
                     <div class="image-container">
                         <div class="image-frame">
-                            <img src="my_image.jpeg" alt="Muhammad Aleem Azhar" class="profile-image" decoding="async">
+                            <img src="my_image.jpeg" alt="Muhammad Aleem Azhar" class="profile-image" decoding="async" loading="eager" fetchpriority="high">
                             <div class="image-overlay">
                                 <div class="overlay-content">
                                     <h3>AI & Data Science</h3>
@@ -995,16 +1009,16 @@
                 <div class="contact-form" data-aos="fade-left">
                     <form id="contactForm">
                         <div class="form-group">
-                            <input type="text" id="name" name="name" placeholder="Your Name" required>
+                            <input type="text" id="name" name="name" placeholder="Your Name" autocomplete="name" required>
                         </div>
                         <div class="form-group">
-                            <input type="email" id="email" name="email" placeholder="Your Email" required>
+                            <input type="email" id="email" name="email" placeholder="Your Email" autocomplete="email" required>
                         </div>
                         <div class="form-group">
-                            <input type="text" id="subject" name="subject" placeholder="Subject" required>
+                            <input type="text" id="subject" name="subject" placeholder="Subject" autocomplete="off" required>
                         </div>
                         <div class="form-group">
-                            <textarea id="message" name="message" placeholder="Your Message" rows="5" required></textarea>
+                            <textarea id="message" name="message" placeholder="Your Message" rows="5" autocomplete="off" required></textarea>
                         </div>
                         <button type="submit" class="btn btn-primary">
                             <span>Send Message</span>
@@ -1043,7 +1057,7 @@
     </button>
 
     <!-- Scripts -->
-    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
-    <script src="script.js"></script>
+    <script src="https://unpkg.com/aos@next/dist/aos.js" defer></script>
+    <script src="script.js" defer></script>
 </body>
 </html>
