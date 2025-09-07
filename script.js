@@ -1,3 +1,5 @@
+"use strict";
+
 // Initialize AOS (Animate On Scroll)
 AOS.init({
     duration: 1000,
@@ -14,18 +16,23 @@ const contactForm = document.getElementById('contactForm');
 const navbar = document.querySelector('.navbar');
 
 // Mobile Navigation Toggle
-hamburger.addEventListener('click', () => {
-    hamburger.classList.toggle('active');
-    navMenu.classList.toggle('active');
-});
-
-// Close mobile menu when clicking on a link
-navLinks.forEach(link => {
-    link.addEventListener('click', () => {
-        hamburger.classList.remove('active');
-        navMenu.classList.remove('active');
+if (hamburger && navMenu) {
+    hamburger.addEventListener('click', () => {
+        const expanded = hamburger.getAttribute('aria-expanded') === 'true';
+        hamburger.setAttribute('aria-expanded', String(!expanded));
+        hamburger.classList.toggle('active');
+        navMenu.classList.toggle('active');
     });
-});
+
+    // Close mobile menu when clicking on a link
+    navLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            hamburger.classList.remove('active');
+            hamburger.setAttribute('aria-expanded', 'false');
+            navMenu.classList.remove('active');
+        });
+    });
+}
 
 // Smooth scrolling for navigation links
 navLinks.forEach(link => {
@@ -671,8 +678,9 @@ window.addEventListener('load', () => {
 // Add keyboard navigation support
 document.addEventListener('keydown', (e) => {
     // Escape key to close mobile menu
-    if (e.key === 'Escape') {
+    if (e.key === 'Escape' && hamburger && navMenu) {
         hamburger.classList.remove('active');
+        hamburger.setAttribute('aria-expanded', 'false');
         navMenu.classList.remove('active');
     }
     
