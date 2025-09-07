@@ -12,7 +12,7 @@ A modern, responsive, and futuristic portfolio website built with HTML5, CSS3, a
 - **Skills Visualization**: Animated skill bars and progress indicators
 - **Timeline Experience**: Professional timeline layout for work experience
 - **Social Integration**: Easy links to LinkedIn, GitHub, and other social profiles
-- **Resume Download**: Direct link to download your resume
+- **Resume Download**: Quick access from the top navigation and contact section
 - **SEO Optimized**: Proper meta tags and semantic HTML structure
 - **Accessible Navigation**: Keyboard-friendly hamburger menu with ARIA attributes
 - **Security Hardened**: Content Security Policy protects against cross-site attacks
