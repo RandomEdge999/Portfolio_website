@@ -31,8 +31,9 @@ Portfolio_website/
 ├── index.html          # Main HTML file
 ├── styles.css          # CSS styles and animations
 ├── script.js           # JavaScript functionality
-├── README.md           # This file
-└── resume.pdf          # Your resume (add this file)
+├── assets/             # Images and resumes
+│   └── resume.pdf      # Your resume (add this file)
+└── README.md           # This file
 ```
 
 ## 🎨 Customization Guide
@@ -48,7 +49,7 @@ Update the following sections in `index.html`:
 <p class="hero-subtitle">Your Title</p>
 
 <!-- Update your photo -->
-<img src="path/to/your/photo.jpg" alt="Your Name" class="profile-image">
+<img src="assets/path/to/your/photo.jpg" alt="Your Name" class="profile-image">
 
 <!-- Update social links -->
 <a href="https://linkedin.com/in/yourprofile" target="_blank">
@@ -78,7 +79,7 @@ Replace the sample projects with your own:
 ```html
 <div class="project-card">
     <div class="project-image">
-        <img src="path/to/project-image.jpg" alt="Project Name">
+        <img src="assets/path/to/project-image.jpg" alt="Project Name">
     </div>
     <div class="project-content">
         <h3 class="project-title">Your Project Name</h3>
