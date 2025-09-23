@@ -223,16 +223,26 @@ body {
 
 .nav-menu {
     display: flex;
+    align-items: center;
     list-style: none;
     gap: 2rem;
 }
 
+.nav-item {
+    display: flex;
+    align-items: center;
+}
+
 .nav-link {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
     text-decoration: none;
     color: var(--text-primary);
     font-weight: 500;
     transition: var(--transition);
     position: relative;
+    line-height: 1;
 }
 
 .nav-link::after {
@@ -951,7 +961,8 @@ section:not(:first-child)::before {
 /* Navigation Resume Dropdown Styles */
 .nav-resume-dropdown {
     position: relative;
-    display: inline-block;
+    display: flex;
+    align-items: center;
 }
 
 .nav-resume-btn {
@@ -970,6 +981,7 @@ section:not(:first-child)::before {
     font-size: inherit;
     position: relative;
     border-radius: 8px;
+    line-height: 1;
 }
 
 .nav-resume-btn:hover {
@@ -2516,6 +2528,7 @@ html {
 
     .nav-item {
         margin: 0.5rem 0;
+        width: 100%;
     }
 
     .nav-link {
