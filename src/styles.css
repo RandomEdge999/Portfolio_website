@@ -29,14 +29,17 @@
 
 * { box-sizing: border-box; }
 
-html { background: var(--bg); }
+html {
+  background: var(--bg);
+  overflow-x: hidden;
+}
 
 body {
   margin: 0;
   min-width: 320px;
   background: var(--bg);
   color: var(--ink);
-  overflow-x: clip;
+  overflow-x: hidden;
 }
 
 body.menu-is-open,
@@ -1104,6 +1107,307 @@ section, footer { scroll-margin-top: var(--header-h); }
   }
   .overlay-art { aspect-ratio: 4 / 3; padding: 28px; border-right: 0; border-bottom: 1px solid var(--line-2); }
   .overlay-copy { padding: 24px; }
+}
+
+/* Compact mobile layout: stack horizontal rows, reduce typographic extremes,
+   and keep dense metadata blocks readable on narrow screens. */
+@media (max-width: 640px) {
+  :root {
+    --gutter: 16px;
+    --section-pad: 64px;
+  }
+
+  .chrome {
+    grid-template-columns: auto 1fr auto;
+    gap: 12px;
+  }
+  .chrome-brand { display: none; }
+  .chrome-mark { justify-self: start; }
+  .chrome-cta {
+    padding: 8px 12px;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+  }
+
+  .hero {
+    min-height: auto;
+    padding: calc(var(--header-h) + 10px) var(--gutter) 32px;
+    row-gap: 14px;
+  }
+  .hero-eyebrow {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+    font-size: 10px;
+    letter-spacing: 0.16em;
+  }
+  .hero-stage {
+    gap: 20px;
+  }
+  .hero-left {
+    gap: 14px;
+  }
+  .hero-name {
+    font-size: clamp(48px, 18vw, 84px);
+    line-height: 0.9;
+  }
+  .hero-subhead {
+    gap: 8px;
+    padding-top: 8px;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+  }
+  .hero-widget {
+    width: 100%;
+    min-width: 0;
+    padding: 12px 14px;
+  }
+  .hero-widget strong {
+    font-size: 16px;
+  }
+  .hero-side {
+    gap: 14px;
+    padding-bottom: 0;
+  }
+  .hero-selected {
+    padding-top: 12px;
+    gap: 2px;
+  }
+  .hero-selected-head {
+    font-size: 9px;
+    letter-spacing: 0.18em;
+  }
+  .hero-selected li:not(.hero-selected-head) button {
+    gap: 10px;
+    padding: 10px 0;
+  }
+  .hero-selected-title {
+    font-size: 15px;
+  }
+  .hero-selected-year {
+    font-size: 10px;
+    letter-spacing: 0.14em;
+  }
+  .hero-foot {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+  }
+  .hero-foot-left {
+    max-width: 28ch;
+    line-height: 1.4;
+  }
+
+  .tagline {
+    padding: 16px 0;
+  }
+  .tagline-track {
+    font-size: 11px;
+    letter-spacing: 0.16em;
+  }
+  .tagline-cell {
+    gap: 20px;
+    padding-right: 20px;
+  }
+
+  .hp {
+    padding-top: calc(var(--section-pad) * 0.75);
+  }
+  .hp-head {
+    display: grid;
+    gap: 6px;
+    padding: 0 var(--gutter) 18px;
+  }
+  .hp-track {
+    gap: 16px;
+    padding: 0 var(--gutter) 40px;
+  }
+  .hp-slide {
+    aspect-ratio: auto;
+    min-height: 440px;
+  }
+  .hp-art {
+    inset: 16% 10% 36% 10%;
+  }
+  .hp-cap strong {
+    font-size: clamp(20px, 7vw, 28px);
+  }
+  .hp-meta {
+    left: 22px;
+    right: 22px;
+    bottom: 18px;
+    max-width: none;
+    text-align: left;
+    padding-top: 10px;
+    border-top: 1px solid var(--line-2);
+  }
+  .hp-meta i {
+    justify-self: start;
+  }
+  .hp-slide-quote {
+    min-height: 320px;
+    padding: 40px 24px;
+  }
+  .hp-slide-quote p {
+    font-size: clamp(24px, 8vw, 40px);
+    max-width: 14ch;
+  }
+
+  .csplit {
+    padding-top: calc(var(--section-pad) * 0.75);
+  }
+  .csplit-col {
+    padding: 32px var(--gutter);
+  }
+  .csplit-title {
+    margin-bottom: 12px;
+    font-size: clamp(42px, 16vw, 86px);
+  }
+  .csplit-caption {
+    margin-bottom: 20px;
+    font-size: 13px;
+  }
+  .csplit-list button {
+    grid-template-columns: 24px 1fr auto;
+    grid-template-areas:
+      "mark title arrow"
+      ". year arrow";
+    row-gap: 4px;
+    column-gap: 12px;
+    padding: 14px 0;
+  }
+  .csplit-list button img { grid-area: mark; }
+  .csplit-list button strong { grid-area: title; font-size: 16px; }
+  .csplit-list button em { grid-area: year; font-size: 10px; letter-spacing: 0.14em; }
+  .csplit-list button svg { grid-area: arrow; }
+
+  .hof {
+    padding: calc(var(--section-pad) * 0.8) var(--gutter) 48px;
+  }
+  .hof-head {
+    margin-bottom: 32px;
+  }
+  .hof-head h2 {
+    font-size: clamp(42px, 14vw, 74px);
+  }
+  .hof-head p {
+    font-size: 13px;
+  }
+
+  .cta {
+    padding: 56px var(--gutter);
+  }
+  .cta-title {
+    font-size: clamp(40px, 13vw, 72px);
+  }
+  .cta-body {
+    margin-top: 20px;
+    font-size: 14px;
+  }
+  .cta-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .tools,
+  .socials {
+    padding: 56px var(--gutter);
+  }
+  .tools-head,
+  .socials-head {
+    margin-bottom: 28px;
+  }
+  .tools-head h2,
+  .socials-head h2 {
+    font-size: clamp(40px, 13vw, 72px);
+  }
+  .tools-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .tools-grid li {
+    padding: 16px 12px;
+    font-size: 12px;
+  }
+  .tools-affiliations {
+    grid-template-columns: 1fr;
+    gap: 14px;
+    margin-top: 32px;
+  }
+  .tools-aff {
+    grid-template-columns: 48px 1fr;
+    gap: 12px;
+    padding: 14px;
+  }
+  .tools-aff img {
+    width: 48px;
+    height: 48px;
+  }
+
+  .socials-list a {
+    grid-template-columns: 24px 1fr auto;
+    gap: 12px;
+    padding: 18px 0;
+    font-size: clamp(18px, 6.5vw, 24px);
+  }
+
+  .footer {
+    padding: 64px var(--gutter) 24px;
+  }
+  .footer-title {
+    margin-bottom: 32px;
+    font-size: clamp(44px, 18vw, 88px);
+  }
+  .footer-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 24px 20px;
+    padding-top: 24px;
+  }
+  .footer-bottom {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    margin-top: 28px;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+  }
+
+  .overlay-sheet {
+    width: calc(100vw - 12px);
+    max-height: calc(100vh - 12px);
+    border-radius: 14px;
+  }
+  .overlay-art {
+    padding: 20px;
+  }
+  .overlay-copy {
+    padding: 20px 18px;
+  }
+  .overlay-copy h3 {
+    font-size: clamp(24px, 8vw, 34px);
+  }
+  .overlay-actions a {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 420px) {
+  .chrome-cta span {
+    display: none;
+  }
+  .hero-name {
+    font-size: clamp(42px, 17vw, 72px);
+  }
+  .hero-selected-head {
+    display: grid;
+    gap: 4px;
+  }
+  .tools-grid,
+  .footer-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* ============================================== Reduced motion fallbacks === */
