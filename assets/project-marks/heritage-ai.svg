@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="480" viewBox="0 0 240 240" fill="none">
+  <style>
+    .bg{fill:#101012}
+    .edge{stroke:#d8ff00;stroke-width:4;stroke-linejoin:miter}
+    .fine{stroke:#f4f4ed;stroke-width:2;opacity:.72}
+    .lime{stroke:#d8ff00;fill:none}
+    .fill{fill:#d8ff00}
+    .type{fill:#f4f4ed;font-family:Arial Black,Arial,sans-serif;font-size:64px;font-weight:900;letter-spacing:-2px}
+  </style>
+  <path class="bg" d="M24 20h154l38 38v158H62l-38-38V20Z"/>
+  <path class="edge" d="M24 20h154l38 38v158H62l-38-38V20Z"/>
+  <path class="fine" d="M42 71h154M42 119h154M42 155h154"/><path class="lime" stroke-width="4" d="M42 172l42-92 42 70 42-106 30 74"/><circle class="fill" cx="123" cy="103" r="6"/>
+  <text class="type" x="36" y="216">HA</text>
+</svg>

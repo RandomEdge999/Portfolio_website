@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="1040" viewBox="0 0 720 520" fill="none">
+  <defs>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="5" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <linearGradient id="panel" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#2b301f"/>
+      <stop offset="1" stop-color="#111112"/>
+    </linearGradient>
+  </defs>
+  <style>
+    .a{stroke:#d2ff00;stroke-width:2;stroke-linecap:square;stroke-linejoin:miter;filter:url(#glow)}
+    .b{stroke:#d2ff00;stroke-width:4;stroke-linecap:square;stroke-linejoin:miter;filter:url(#glow)}
+    .c{fill:#d2ff00;filter:url(#glow)}
+    .d{fill:#f4f4ed;opacity:.72}
+    .dark{stroke:#141414;stroke-width:4;stroke-linecap:square}
+    .box{fill:url(#panel);stroke:#f4f4ed;stroke-width:2;opacity:.96}
+    .screen,.panel,.cube{fill:#151812;stroke:#d2ff00;stroke-width:2;opacity:.94}
+    .paper{fill:#f4f4ed;stroke:#111112;stroke-width:2;opacity:.95}
+    .side{opacity:.74}
+    .tilt{transform:rotate(-8deg);transform-origin:center}
+    .ring,.orbit{stroke:#d2ff00;stroke-width:3;opacity:.84}
+    .orbit{stroke-dasharray:12 18;opacity:.7}
+    .map,.wave{stroke:#f4f4ed;stroke-width:3;opacity:.74}
+    .hand{fill:#f4f4ed;stroke:#111112;stroke-width:3;opacity:.92}
+    .highlight,.petal{fill:#d2ff00;opacity:.55}
+    .hanger{stroke:#d2ff00;stroke-width:3;fill:none;opacity:.86}
+    .thick{stroke-width:5}
+  </style>
+  <g opacity=".16"><line class="b" x1="-40" y1="434" x2="616" y2="382" opacity="0.72"/><line class="a" x1="-11" y1="481" x2="296" y2="429" opacity="0.35"/><line class="a" x1="18" y1="108" x2="356" y2="56" opacity="0.35"/><line class="a" x1="47" y1="155" x2="416" y2="103" opacity="0.35"/><line class="b" x1="76" y1="202" x2="476" y2="150" opacity="0.35"/><line class="a" x1="105" y1="249" x2="536" y2="197" opacity="0.72"/><line class="a" x1="134" y1="296" x2="596" y2="244" opacity="0.35"/><line class="a" x1="163" y1="343" x2="656" y2="291" opacity="0.35"/><line class="b" x1="-68" y1="390" x2="456" y2="338" opacity="0.35"/><line class="a" x1="-39" y1="437" x2="516" y2="385" opacity="0.35"/><line class="a" x1="-10" y1="484" x2="576" y2="432" opacity="0.72"/><line class="a" x1="19" y1="111" x2="636" y2="59" opacity="0.35"/><line class="b" x1="48" y1="158" x2="696" y2="106" opacity="0.35"/><line class="a" x1="77" y1="205" x2="376" y2="153" opacity="0.35"/><line class="a" x1="106" y1="252" x2="436" y2="200" opacity="0.35"/><line class="a" x1="135" y1="299" x2="496" y2="247" opacity="0.72"/><line class="b" x1="164" y1="346" x2="556" y2="294" opacity="0.35"/><line class="a" x1="-67" y1="393" x2="356" y2="341" opacity="0.35"/><line class="a" x1="-38" y1="440" x2="416" y2="388" opacity="0.35"/><line class="a" x1="-9" y1="487" x2="476" y2="435" opacity="0.35"/><line class="b" x1="20" y1="114" x2="536" y2="62" opacity="0.72"/><line class="a" x1="49" y1="161" x2="596" y2="109" opacity="0.35"/><line class="a" x1="78" y1="208" x2="656" y2="156" opacity="0.35"/><line class="a" x1="107" y1="255" x2="716" y2="203" opacity="0.35"/></g>
+  <g>
+      <rect class="screen" x="160" y="124" width="400" height="270" />
+      <circle class="ring" cx="280" cy="258" r="62" />
+      <circle class="ring" cx="440" cy="258" r="62" />
+      <line class="b thick" x1="324" y1="258" x2="396" y2="258" />
+      <line class="b" x1="-61" y1="401" x2="592" y2="349" opacity="0.72"/><line class="a" x1="-32" y1="448" x2="272" y2="396" opacity="0.35"/><line class="a" x1="-3" y1="495" x2="332" y2="443" opacity="0.35"/><line class="a" x1="26" y1="122" x2="392" y2="70" opacity="0.35"/><line class="b" x1="55" y1="169" x2="452" y2="117" opacity="0.35"/><line class="a" x1="84" y1="216" x2="512" y2="164" opacity="0.72"/><line class="a" x1="113" y1="263" x2="572" y2="211" opacity="0.35"/><line class="a" x1="142" y1="310" x2="632" y2="258" opacity="0.35"/><line class="b" x1="171" y1="357" x2="692" y2="305" opacity="0.35"/><line class="a" x1="-60" y1="404" x2="492" y2="352" opacity="0.35"/><line class="a" x1="-31" y1="451" x2="552" y2="399" opacity="0.72"/>
+    </g>
+  <g opacity=".38"><circle class="c" cx="189" cy="260" r="3" /><circle class="d" cx="256" cy="301" r="4" /><circle class="d" cx="323" cy="342" r="5" /><circle class="c" cx="390" cy="383" r="6" /><circle class="d" cx="457" cy="424" r="7" /><circle class="d" cx="524" cy="75" r="8" /><circle class="c" cx="591" cy="116" r="3" /><circle class="d" cx="113" cy="157" r="4" /><circle class="d" cx="180" cy="198" r="5" /><circle class="c" cx="247" cy="239" r="6" /></g>
+</svg>

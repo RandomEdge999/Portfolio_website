@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="480" viewBox="0 0 240 240" fill="none">
+  <style>
+    .bg{fill:#101012}
+    .lime{stroke:#d2ff00;fill:none;stroke-linecap:square;stroke-linejoin:miter}
+    .paper{stroke:#f4f4ed;fill:none;stroke-linecap:square;stroke-linejoin:miter}
+    .fill{fill:#d2ff00}
+    .ink{fill:#101012}
+    .type{fill:#f4f4ed;font-family:Arial Black,Arial,sans-serif;font-size:31px;font-weight:900}
+    .small{fill:#d2ff00;font-family:Arial Black,Arial,sans-serif;font-size:16px;font-weight:900}
+  </style>
+  <path class="bg" d="M18 36h132l20-18h52v152l-28 52H58l-40-40V36Z"/>
+  <path class="lime" stroke-width="5" d="M18 36h132l20-18h52v152l-28 52H58l-40-40V36Z"/>
+  <path class="lime" stroke-width="3" d="M36 148C66 60 166 42 210 108"/>
+  <path class="lime" stroke-width="3" d="M26 94c54 54 124 78 194 38"/>
+  <path class="paper" stroke-width="2" d="M54 178c42-40 92-42 150-6"/>
+  <path class="paper" stroke-width="2" d="M78 186v22M116 178v30M154 178v30M192 186v22"/>
+  <g transform="rotate(-13 122 107)">
+    <path class="lime" stroke-width="4" d="M82 86h80v52H82z"/>
+    <path class="lime" stroke-width="3" d="M42 92h40M162 92h40M42 132h40M162 132h40"/>
+    <path class="paper" stroke-width="2" d="M98 86v52M122 86v52M146 86v52M82 103h80M82 120h80"/>
+    <circle class="fill" cx="122" cy="112" r="8"/>
+    <circle class="ink" cx="122" cy="112" r="3"/>
+  </g>
+  <text class="type" x="34" y="67">RHOK</text>
+  <text class="small" x="147" y="207">SAT</text>
+</svg>
