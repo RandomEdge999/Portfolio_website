@@ -22,29 +22,15 @@ function object(slug: string) {
 }
 
 const assets = {
-  heroCutout: new URL("../../assets/aleem-hero-cutout.png", import.meta.url).href,
   resumeCV: new URL("../../assets/Muhammad_Aleem_Azhar_CV.pdf", import.meta.url).href,
   rhodes: new URL("../../assets/Rhodes_College_seal.svg.png", import.meta.url).href,
   yonsei: new URL("../../assets/yonsei-university.png", import.meta.url).href,
 };
 
-// Project portrait cutouts: paired with project slugs so Hall-of-Fame and the hero strip
-// can render real imagery instead of falling back to the abstract SVG `objectVisual`.
-export const siteImagery: Record<string, string> = {
-  findmyjob: new URL("../../assets/project-findmyjob-cutout.png", import.meta.url).href,
-  agentclassroom: new URL("../../assets/project-agentclassroom-cutout.png", import.meta.url).href,
-  "rhok-sat": new URL("../../assets/project-rhok-sat-cutout.png", import.meta.url).href,
-  "city-pulse": new URL("../../assets/project-city-pulse-cutout.png", import.meta.url).href,
-  "hand-reading-ai": new URL("../../assets/project-hand-reading-cutout.png", import.meta.url).href,
-  "soccer-predictor-pro": new URL("../../assets/project-soccer-predictor-cutout.png", import.meta.url).href,
-  "teacher-evaluation": new URL("../../assets/project-teacher-eval-cutout.png", import.meta.url).href,
-};
-
-export const siteHeroAsset = assets.heroCutout;
-
 export const navigation: NavigationItem[] = [
-  { label: "Story", href: "#story" },
-  { label: "Systems", href: "#systems" },
+  { label: "Work", href: "#work" },
+  { label: "Approach", href: "#approach" },
+  { label: "Background", href: "#background" },
   { label: "Contact", href: "#contact" },
 ];
 
@@ -67,7 +53,7 @@ export const projects: PortfolioProject[] = [
     eyebrow: "local-first operator",
     thesis:
       "A supervised job application system that discovers roles, screens fit locally, drafts materials, controls a browser, and keeps approval visible.",
-    short: "Local job automation with supervised browser control and preview-first defaults.",
+    short: "Supervised job search with local ranking, drafts, browser control, and approval before action.",
     year: "2026",
     statusLabel: "Featured",
     visualBrief: "operator console / application ledger / local model rig",
@@ -81,7 +67,7 @@ export const projects: PortfolioProject[] = [
     stack: ["Python 3.12", "FastAPI", "React", "Playwright", "LM Studio"],
     proofPoints: ["one-line installer", "preview-first defaults", "browser automation", "CSV/XLSX ledgers"],
     detailCopy:
-      "Built as an inspectable operator surface rather than a blind auto-apply bot: discover roles, rank fit, draft materials, and keep approval in the loop.",
+      "Built because job automation should not be a blind auto-apply loop. It discovers roles, ranks fit locally, drafts materials, and keeps approval visible before the browser moves.",
     sourceQuality: "substantial local/public README with beta posture, installer flow, and operator workflow",
     links: [{ label: "GitHub", href: "https://github.com/RandomEdge999/FindMyJob", external: true }],
   },
@@ -184,7 +170,7 @@ export const projects: PortfolioProject[] = [
     eyebrow: "time-series ML",
     thesis:
       "A noise-resilient time-series forecasting project comparing adversarial LSTM variants against neural, transformer, classical, and frequency-domain baselines.",
-    short: "GAN-based time-series forecasting with noise robustness and benchmark baselines.",
+    short: "Adversarial time-series forecasting tested against noisy real-world sensor conditions.",
     year: "2026",
     statusLabel: "Featured",
     visualBrief: "forecast waveform / adversarial model / noisy sensor data",
@@ -198,7 +184,7 @@ export const projects: PortfolioProject[] = [
     stack: ["Python", "PyTorch", "LSTM", "WGAN-GP", "TSLib", "SageMaker"],
     proofPoints: ["noise robustness", "benchmark suite", "real sensor datasets", "Colab workflow"],
     detailCopy:
-      "Research project testing whether adversarial training improves forecasting robustness under real-world noise.",
+      "Research project testing whether adversarial training can make forecasting models hold up when the input signal gets noisy, messy, and closer to real deployment conditions.",
     sourceQuality: "local/public README documents models, datasets, experiment commands, and outputs",
     links: [{ label: "GitHub", href: "https://github.com/RandomEdge999/RGAN-Research-Project", external: true }],
   },
@@ -208,7 +194,7 @@ export const projects: PortfolioProject[] = [
     eyebrow: "urban telemetry",
     thesis:
       "A real-time city dashboard blending environmental data, emotion analysis, maps, anomaly detection, and forecasting into one operational surface.",
-    short: "Urban mood, environment, maps, anomaly detection, and forecasting.",
+    short: "A civic signal board for maps, forecasts, environmental data, anomalies, and urban mood.",
     year: "2026",
     statusLabel: "Featured",
     visualBrief: "city signal map / air-quality contour / anomaly board",
@@ -222,7 +208,7 @@ export const projects: PortfolioProject[] = [
     stack: ["FastAPI", "Next.js", "PostgreSQL", "TimescaleDB", "Redis", "Mapbox"],
     proofPoints: ["emotion model", "zone monitoring", "forecasting", "geospatial data"],
     detailCopy:
-      "A civic signal board that treats maps, forecasts, and model outputs as one monitoring layer instead of separate dashboards.",
+      "A civic signal board that treats maps, forecasts, model outputs, and environmental data as one monitoring layer instead of separate dashboards.",
     sourceQuality: "public README includes feature set, backend architecture, and frontend architecture",
     links: [{ label: "GitHub", href: "https://github.com/RandomEdge999/City-Pulse", external: true }],
   },
@@ -340,7 +326,7 @@ export const projects: PortfolioProject[] = [
     stack: ["Next.js", "TypeScript", "Hugging Face", "Stripe", "Framer Motion"],
     proofPoints: ["tone analysis", "intent detection", "suggestions", "pro workflow"],
     detailCopy: "A communication analysis interface for making tone, intent, and risk visible before publishing.",
-    sourceQuality: "public README is usable but marked work in progress",
+    sourceQuality: "public README includes current product direction and feature scope",
     links: [{ label: "GitHub", href: "https://github.com/RandomEdge999/ai-social-mirror", external: true }],
   },
   {
@@ -510,16 +496,48 @@ export const projects: PortfolioProject[] = [
     links: [{ label: "GitHub", href: "https://github.com/RandomEdge999/Git-Client", external: true }],
   },
   ...[
-    ["Swaply", "swaply", "2025", "https://github.com/RandomEdge999/Swaply"],
-    ["CherryPick", "cherrypick", "2026", "https://github.com/RandomEdge999/CherryPick"],
-    ["JaneStreetAtHome", "janestreetathome", "2025", "https://github.com/RandomEdge999/JaneStreetAtHome"],
-    ["My Favourite Cinema", "my-favourite-cinema", "2025", "https://github.com/RandomEdge999/My_Favourite_Cinema"],
-  ].map(([title, slug, year, href]) => ({
+    {
+      title: "Swaply",
+      slug: "swaply",
+      year: "2025",
+      href: "https://github.com/RandomEdge999/Swaply",
+      thesis: "An early exchange-product prototype kept in the archive as part of the product-interface trail.",
+      short: "Archive reference for an early exchange-product interface.",
+      detailCopy: "An early product experiment that stays in the archive while deeper systems carry the main portfolio narrative.",
+    },
+    {
+      title: "CherryPick",
+      slug: "cherrypick",
+      year: "2026",
+      href: "https://github.com/RandomEdge999/CherryPick",
+      thesis: "An archive project from the utility and workflow side of the portfolio.",
+      short: "Archive reference for a smaller utility workflow.",
+      detailCopy: "A smaller utility project retained as part of the full build history without giving it the same weight as the main systems.",
+    },
+    {
+      title: "JaneStreetAtHome",
+      slug: "janestreetathome",
+      year: "2025",
+      href: "https://github.com/RandomEdge999/JaneStreetAtHome",
+      thesis: "A compact archive entry from the puzzle, quant, and learning side of the work.",
+      short: "Archive reference for puzzle and quant-style exploration.",
+      detailCopy: "A smaller learning-focused project kept visible as part of the broader technical history.",
+    },
+    {
+      title: "My Favourite Cinema",
+      slug: "my-favourite-cinema",
+      year: "2025",
+      href: "https://github.com/RandomEdge999/My_Favourite_Cinema",
+      thesis: "A lightweight cinema interface experiment from the product and frontend archive.",
+      short: "Archive reference for a compact frontend product interface.",
+      detailCopy: "A lightweight interface project retained in the archive so the portfolio shows the path without overpromoting thin entries.",
+    },
+  ].map(({ title, slug, year, href, thesis, short, detailCopy }) => ({
     title,
     slug,
     eyebrow: "archive",
-    thesis: "Archive entry with a lightweight public footprint.",
-    short: "Logo-only archive entry.",
+    thesis,
+    short,
     year,
     statusLabel: "Archive",
     visualBrief: "archive mark",
@@ -531,9 +549,8 @@ export const projects: PortfolioProject[] = [
     source: "archive" as const,
     repoUrl: href,
     stack: ["Archived project"],
-    proofPoints: ["public repo", "lightweight footprint"],
-    detailCopy:
-      "Included as a logo-only archive item so the portfolio is complete without giving thin repositories the same weight as substantial systems.",
+    proofPoints: ["public repo", "archive placement"],
+    detailCopy,
     sourceQuality: "thin or unclear README; intentionally not promoted into the main story",
     links: [{ label: "GitHub", href, external: true }],
   })),

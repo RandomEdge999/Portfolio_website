@@ -1,640 +1,432 @@
 import {
   ArrowUpRight,
+  BrainCircuit,
+  ChevronLeft,
+  ChevronRight,
+  Code2,
   FileText,
   Github,
   Linkedin,
   Mail,
   Menu,
-  Twitter,
+  MonitorCog,
   X,
 } from "lucide-react";
-import {
-  useEffect,
-  useLayoutEffect,
-  useMemo,
-  useRef,
-  useState,
-  type CSSProperties,
-} from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import Lenis from "lenis";
-import {
-  education,
-  navigation,
-  projects,
-  resumeLinks,
-  siteHeroAsset,
-  siteImagery,
-  socials,
-} from "./data/portfolio";
-import type { PortfolioProject } from "./types";
+import { useEffect, useState, type CSSProperties } from "react";
+import { education, navigation, projects, resumeLinks, socials } from "./data/portfolio";
+import type { PortfolioProject, VisualGroup } from "./types";
 
-gsap.registerPlugin(ScrollTrigger);
+const reelProjects = projects;
+const AUTO_ADVANCE_MS = 6200;
 
-const featuredProjects = projects.filter((p) => p.tier === "featured");
-const systemsProjects = projects.filter((p) => p.tier !== "archive");
-const archiveProjects = projects.filter((p) => p.tier === "archive");
+const groupLabels: Record<VisualGroup, string> = {
+  operator: "Product automation",
+  agent: "Agent workflow",
+  city: "Civic telemetry",
+  education: "Institution tooling",
+  model: "Applied ML",
+  vision: "Vision interface",
+  reader: "Reader tooling",
+  satellite: "Research ops",
+  marketplace: "Marketplace",
+  history: "Data story",
+  utility: "Developer tooling",
+  creative: "Creative product",
+  archive: "Archive",
+};
 
-// Bucket featured projects into BUILDING / RESEARCHING for the category split.
-const buildSlugs = new Set(["findmyjob", "agentwarehouse", "agentclassroom", "rhokpy"]);
-const buildProjects = featuredProjects.filter((p) => buildSlugs.has(p.slug));
-const researchProjects = featuredProjects.filter((p) => !buildSlugs.has(p.slug));
+const approach = [
+  {
+    title: "Interface First",
+    label: "Product feel",
+    icon: <Code2 size={21} />,
+    body: "The screen should explain the system: hierarchy, motion, responsive layout, and state that never feels hidden.",
+  },
+  {
+    title: "Human Control",
+    label: "AI workflow",
+    icon: <BrainCircuit size={21} />,
+    body: "Automation is strongest when approvals, traces, confidence, and failure modes are visible before anything important happens.",
+  },
+  {
+    title: "Whole System",
+    label: "Build depth",
+    icon: <MonitorCog size={21} />,
+    body: "I care about the browser, API, database, model, and deployment surface because users feel the gaps between them.",
+  },
+];
 
-const heroQuote =
-  "It doesn’t matter where you start — it’s how you progress from there.";
+const backgroundNotes = [
+  "Computer science student at Rhodes College, graduating 2026.",
+  "Work sits between full-stack product engineering, applied ML, and local-first automation.",
+  "Most projects are built as operating surfaces: approval flows, dashboards, evaluation loops, and research tools.",
+];
 
-function useReducedMotion() {
-  const [reduced, setReduced] = useState(false);
+function projectMedia(project: PortfolioProject) {
+  return project.objectVisual;
+}
+
+function groupName(project: PortfolioProject) {
+  return groupLabels[project.galleryGroup];
+}
+
+function useBodyLock(locked: boolean) {
   useEffect(() => {
-    const q = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const update = () => setReduced(q.matches);
+    document.documentElement.classList.toggle("is-locked", locked);
+    document.body.classList.toggle("is-locked", locked);
+    return () => {
+      document.documentElement.classList.remove("is-locked");
+      document.body.classList.remove("is-locked");
+    };
+  }, [locked]);
+}
+
+function usePrefersReducedMotion() {
+  const [reduced, setReduced] = useState(false);
+
+  useEffect(() => {
+    const query = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const update = () => setReduced(query.matches);
     update();
-    q.addEventListener("change", update);
-    return () => q.removeEventListener("change", update);
+    query.addEventListener("change", update);
+    return () => query.removeEventListener("change", update);
   }, []);
+
   return reduced;
 }
 
-/* ------------------------------------------------------------------ Lenis */
-
-function useLenis(reducedMotion: boolean) {
-  useEffect(() => {
-    if (reducedMotion) return;
-    const lenis = new Lenis({
-      duration: 0.9,
-      easing: (t: number) => 1 - Math.pow(1 - t, 3),
-      smoothWheel: true,
-    });
-    const tick = (time: number) => lenis.raf(time * 1000);
-    gsap.ticker.add(tick);
-    gsap.ticker.lagSmoothing(0);
-    lenis.on("scroll", ScrollTrigger.update);
-    ScrollTrigger.refresh();
-    return () => {
-      gsap.ticker.remove(tick);
-      lenis.destroy();
-    };
-  }, [reducedMotion]);
-}
-
-/* ------------------------------------------------------------------ Loader */
-
-function EntryLoader({ ready }: { ready: boolean }) {
-  return (
-    <div className={`entry-loader ${ready ? "is-hidden" : ""}`} aria-hidden={ready}>
-      <span className="entry-mark">AA</span>
-      <span className="entry-label">LOAD ALEEM</span>
-      <span className="entry-bar" />
-    </div>
-  );
-}
-
-/* ------------------------------------------------------------------ Chrome */
-
-function FixedChrome({
-  menuOpen,
-  setMenuOpen,
-  openProject,
-}: {
-  menuOpen: boolean;
-  setMenuOpen: (open: boolean) => void;
-  openProject: (project: PortfolioProject) => void;
-}) {
-  useEffect(() => {
-    document.body.classList.toggle("menu-is-open", menuOpen);
-    return () => document.body.classList.remove("menu-is-open");
-  }, [menuOpen]);
-
+function Chrome({ menuOpen, setMenuOpen }: { menuOpen: boolean; setMenuOpen: (open: boolean) => void }) {
   useEffect(() => {
     if (!menuOpen) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setMenuOpen(false);
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setMenuOpen(false);
     };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
   }, [menuOpen, setMenuOpen]);
 
   return (
     <>
-      <header className="chrome" aria-label="Primary">
-        <a className="chrome-brand" href="#top">
-          <span>Aleem</span>
-          <span>Azhar</span>
+      <header className="chrome" aria-label="Primary navigation">
+        <a className="brand" href="#top" aria-label="Aleem Azhar home">
+          <span>AA</span>
+          <strong>Aleem Azhar</strong>
         </a>
-        <a className="chrome-mark" href="#top" aria-label="Home">AA</a>
+
+        <nav className="nav" aria-label="Sections">
+          {navigation.map((item) => (
+            <a key={item.href} href={item.href}>{item.label}</a>
+          ))}
+        </nav>
+
         <div className="chrome-actions">
-          <a className="chrome-cta" href={resumeLinks[0].href} target="_blank" rel="noreferrer">
-            <FileText size={13} />
-            <span>Resume</span>
+          <a className="icon-btn" href={resumeLinks[0].href} target="_blank" rel="noreferrer" aria-label="Open resume">
+            <FileText size={17} />
           </a>
           <button
-            className="chrome-menu"
+            className="icon-btn"
             type="button"
-            aria-expanded={menuOpen}
             aria-label={menuOpen ? "Close menu" : "Open menu"}
+            aria-expanded={menuOpen}
             onClick={() => setMenuOpen(!menuOpen)}
           >
-            {menuOpen ? <X size={16} /> : <Menu size={16} />}
+            {menuOpen ? <X size={18} /> : <Menu size={18} />}
           </button>
         </div>
       </header>
 
       <button
-        className={`drawer-backdrop ${menuOpen ? "is-open" : ""}`}
+        className={`drawer-shade ${menuOpen ? "is-open" : ""}`}
         type="button"
         aria-label="Close menu"
+        aria-hidden={!menuOpen}
         tabIndex={menuOpen ? 0 : -1}
         onClick={() => setMenuOpen(false)}
       />
 
       <aside className={`drawer ${menuOpen ? "is-open" : ""}`} aria-hidden={!menuOpen}>
         <div className="drawer-top">
-          <span>AA / Index</span>
-          <button
-            className="drawer-close"
-            type="button"
-            aria-label="Close menu"
-            onClick={() => setMenuOpen(false)}
-          >
-            <X size={16} />
+          <span>Menu</span>
+          <button className="icon-btn" type="button" aria-label="Close menu" onClick={() => setMenuOpen(false)}>
+            <X size={18} />
           </button>
         </div>
-        <nav className="drawer-nav" aria-label="Sections">
-          {navigation.map((item, i) => (
+        <nav className="drawer-nav" aria-label="Mobile sections">
+          {navigation.map((item, index) => (
             <a key={item.href} href={item.href} onClick={() => setMenuOpen(false)}>
-              <em>{String(i + 1).padStart(2, "0")}</em>
-              <span>{item.label}</span>
+              <em>{String(index + 1).padStart(2, "0")}</em>
+              {item.label}
             </a>
           ))}
         </nav>
-        <div className="drawer-projects">
-          <span className="drawer-label">Featured</span>
-          <ul>
-            {featuredProjects.map((p) => (
-              <li key={p.slug}>
-                <button
-                  type="button"
-                  onClick={() => {
-                    openProject(p);
-                    setMenuOpen(false);
-                  }}
-                >
-                  <em>{p.year}</em>
-                  <strong>{p.title}</strong>
-                </button>
-              </li>
-            ))}
-          </ul>
-        </div>
-        <div className="drawer-foot">
-          <a className="drawer-resume" href={resumeLinks[0].href} target="_blank" rel="noreferrer">
-            <FileText size={14} />
-            <span>View resume (PDF)</span>
-            <ArrowUpRight size={14} />
-          </a>
-          <a className="drawer-mail" href="mailto:aleemazhar14@gmail.com">aleemazhar14@gmail.com</a>
+        <div className="drawer-note">
+          <span>Focus</span>
+          <p>Software engineering, applied ML, and product interfaces built with control and taste.</p>
         </div>
       </aside>
     </>
   );
 }
 
-/* -------------------------------------------------------------------- Hero */
+function wrapIndex(index: number, total: number) {
+  return (index + total) % total;
+}
 
-function HeroScene({ openProject }: { openProject: (p: PortfolioProject) => void }) {
-  const top = featuredProjects[0];
-  const selectedSlugs = ["findmyjob", "agentclassroom", "rhok-sat"];
-  const selectedProjects = selectedSlugs
-    .map((s) => featuredProjects.find((p) => p.slug === s))
-    .filter((p): p is PortfolioProject => Boolean(p));
+function Hero() {
   return (
     <section className="hero" id="top">
-      <div className="hero-grid" aria-hidden="true" />
-      <div className="hero-eyebrow">
-        <span>Portfolio / 2026</span>
-        <span>Memphis · Seoul · Remote</span>
+      <div className="hero-copy">
+        <p className="eyebrow">Software engineer / applied ML / product interfaces</p>
+        <h1>
+          <span>Aleem</span>
+          <span>Azhar</span>
+        </h1>
+        <p className="hero-line">
+          I design and build interactive software where the interface, the data model, and the AI behavior have to line up.
+        </p>
+        <div className="hero-actions">
+          <a className="primary-link" href="#work">Explore work <ArrowUpRight size={15} /></a>
+          <a className="quiet-link" href="#contact">Contact <ArrowUpRight size={14} /></a>
+        </div>
       </div>
 
-      <div className="hero-stage">
-        <div className="hero-left">
-          <h1 className="hero-name">
-            <span>Aleem</span>
-            <span>Azhar</span>
-          </h1>
+      <div className="hero-visual" aria-hidden="true">
+        <svg className="hero-field" viewBox="0 0 720 620" role="presentation" focusable="false">
+          <defs>
+            <linearGradient id="heroRibbon" x1="64" x2="660" y1="548" y2="62" gradientUnits="userSpaceOnUse">
+              <stop offset="0" stopColor="#78d7d0" stopOpacity="0.1" />
+              <stop offset="0.38" stopColor="#d8ff2f" stopOpacity="0.72" />
+              <stop offset="1" stopColor="#f4b15b" stopOpacity="0.16" />
+            </linearGradient>
+            <linearGradient id="heroThread" x1="42" x2="690" y1="250" y2="350" gradientUnits="userSpaceOnUse">
+              <stop offset="0" stopColor="#f5f0e5" stopOpacity="0" />
+              <stop offset="0.45" stopColor="#d8ff2f" stopOpacity="0.84" />
+              <stop offset="1" stopColor="#78d7d0" stopOpacity="0" />
+            </linearGradient>
+            <filter id="heroGlow" x="-30%" y="-30%" width="160%" height="160%">
+              <feGaussianBlur stdDeviation="16" result="blur" />
+              <feMerge>
+                <feMergeNode in="blur" />
+                <feMergeNode in="SourceGraphic" />
+              </feMerge>
+            </filter>
+          </defs>
 
-          <h2 className="hero-subhead">
-            <span>2026</span>
-            <span>Software · ML · Product Engineer</span>
-          </h2>
+          <path className="field-ribbon field-ribbon-back" d="M38 454C126 298 236 242 350 284C462 326 480 158 612 96C676 66 706 76 736 96" />
+          <path className="field-ribbon field-ribbon-main" d="M-22 386C90 278 202 244 316 286C434 330 492 244 552 170C596 116 646 86 734 80" />
+          <path className="field-ribbon field-ribbon-low" d="M30 536C126 492 198 482 302 506C414 532 474 456 544 382C602 320 664 300 740 326" />
 
-          <button
-            className="hero-widget"
-            type="button"
-            onClick={() => openProject(top)}
-            aria-label={`Currently building: ${top.title}`}
-          >
-            <span>Currently building</span>
-            <strong>{top.title}</strong>
-            <em>
-              {top.statusLabel}
-              <ArrowUpRight size={12} />
-            </em>
+          <g className="field-threads">
+            <path d="M22 328C132 264 246 258 358 304C464 348 536 294 690 184" />
+            <path d="M84 186C188 160 298 174 406 226C510 276 590 250 704 164" />
+            <path d="M54 486C166 448 274 454 374 486C486 522 582 468 702 380" />
+            <path d="M142 88C238 132 308 178 404 170C512 162 584 92 710 42" />
+          </g>
+
+          <g className="field-contours">
+            <path d="M188 426C136 342 158 246 238 194C320 140 438 156 500 232C558 304 536 422 454 480C370 538 244 518 188 426Z" />
+            <path d="M248 394C212 336 228 266 284 230C342 192 426 204 470 258C512 312 496 394 436 434C376 474 288 458 248 394Z" />
+            <path d="M520 234C486 184 496 122 548 92C604 60 676 82 708 136C738 186 718 254 662 282C610 308 554 284 520 234Z" />
+          </g>
+
+          <g className="field-nodes">
+            <path d="M150 326l10 6-10 6-10-6z" />
+            <path d="M488 214l10 6-10 6-10-6z" />
+            <path d="M606 126l10 6-10 6-10-6z" />
+            <path d="M382 502l10 6-10 6-10-6z" />
+          </g>
+        </svg>
+      </div>
+    </section>
+  );
+}
+
+function visibleProjects(activeIndex: number) {
+  return [-2, -1, 0, 1, 2].map((offset) => {
+    const index = wrapIndex(activeIndex + offset, reelProjects.length);
+    return { index, offset, project: reelProjects[index] };
+  });
+}
+
+function Work({ openProject, overlayOpen }: { openProject: (project: PortfolioProject) => void; overlayOpen: boolean }) {
+  const reducedMotion = usePrefersReducedMotion();
+  const [activeIndex, setActiveIndex] = useState(0);
+  const activeProject = reelProjects[activeIndex];
+  const previousProject = reelProjects[wrapIndex(activeIndex - 1, reelProjects.length)];
+  const nextProject = reelProjects[wrapIndex(activeIndex + 1, reelProjects.length)];
+  const visible = visibleProjects(activeIndex);
+  const goPrevious = () => setActiveIndex((index) => wrapIndex(index - 1, reelProjects.length));
+  const goNext = () => setActiveIndex((index) => wrapIndex(index + 1, reelProjects.length));
+
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      const target = event.target as HTMLElement | null;
+      const typing = target?.tagName === "INPUT" || target?.tagName === "TEXTAREA" || target?.isContentEditable;
+      if (typing || document.querySelector(".overlay") || document.querySelector(".drawer.is-open")) return;
+      if (event.key === "ArrowLeft") {
+        event.preventDefault();
+        setActiveIndex((index) => wrapIndex(index - 1, reelProjects.length));
+      }
+      if (event.key === "ArrowRight") {
+        event.preventDefault();
+        setActiveIndex((index) => wrapIndex(index + 1, reelProjects.length));
+      }
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, []);
+
+  useEffect(() => {
+    if (overlayOpen || reducedMotion) return;
+    const timer = window.setTimeout(() => {
+      setActiveIndex((index) => wrapIndex(index + 1, reelProjects.length));
+    }, AUTO_ADVANCE_MS);
+    return () => window.clearTimeout(timer);
+  }, [activeIndex, overlayOpen, reducedMotion]);
+
+  useEffect(() => {
+    visibleProjects(activeIndex).forEach(({ project }) => {
+      const image = new Image();
+      image.src = projectMedia(project);
+    });
+  }, [activeIndex]);
+
+  const reelStyle = {
+    "--accent": activeProject.accent,
+    "--reel-duration": `${AUTO_ADVANCE_MS}ms`,
+  } as CSSProperties;
+
+  return (
+    <section className="work" id="work" style={reelStyle}>
+      <header className="section-head work-head">
+        <span>01 / Work</span>
+        <h2>Builds in motion.</h2>
+        <p>A focused reel across the full project history: agent tools, automation systems, ML experiments, and product interfaces.</p>
+      </header>
+
+      <div className={`work-reel ${overlayOpen || reducedMotion ? "is-paused" : ""}`}>
+        <div className="work-visual" aria-hidden="true">
+          <img className="work-object work-object-back" src={projectMedia(previousProject)} alt="" loading="lazy" />
+          <img key={activeProject.slug} className="work-object work-object-active" src={projectMedia(activeProject)} alt="" loading="eager" />
+          <img className="work-object work-object-front" src={projectMedia(nextProject)} alt="" loading="lazy" />
+        </div>
+
+        <div className="work-copy" aria-live="polite">
+          <span className="work-count">{String(activeIndex + 1).padStart(2, "0")} / {String(reelProjects.length).padStart(2, "0")}</span>
+          <span>{groupName(activeProject)} / {activeProject.year}</span>
+          <button type="button" onClick={() => openProject(activeProject)} aria-label={`Open ${activeProject.title}`}>
+            <strong>{activeProject.title}</strong>
+            <ArrowUpRight size={17} />
+          </button>
+          <p>{activeProject.short}</p>
+          <div className="work-stack" aria-label="Project stack">
+            {activeProject.stack.slice(0, 4).map((tool) => <span key={tool}>{tool}</span>)}
+          </div>
+        </div>
+
+        <div className="work-controls" aria-label="Browse projects">
+          <button type="button" onClick={goPrevious} aria-label="Previous project">
+            <ChevronLeft size={20} />
+          </button>
+          <span className="work-progress" aria-hidden="true">
+            <span key={`${activeProject.slug}-${activeIndex}`} />
+          </span>
+          <button type="button" onClick={goNext} aria-label="Next project">
+            <ChevronRight size={20} />
           </button>
         </div>
-
-        <aside className="hero-side" aria-label="Selected work">
-          <div className="hero-portrait">
-            <img src={siteHeroAsset} alt="Aleem Azhar" loading="eager" />
-          </div>
-          <ul className="hero-selected">
-            <li className="hero-selected-head">
-              <span>Selected work</span>
-              <span>2024 — 2026</span>
-            </li>
-            {selectedProjects.map((p) => (
-              <li key={p.slug}>
-                <button type="button" onClick={() => openProject(p)}>
-                  <span className="hero-selected-title">{p.title}</span>
-                  <span className="hero-selected-year">{p.year}</span>
-                </button>
-              </li>
-            ))}
-          </ul>
-        </aside>
       </div>
 
-      <div className="hero-foot">
-        <span className="hero-foot-left">CS @ Rhodes College / Memphis, TN</span>
-        <a className="hero-foot-cta" href="#work">
-          Scroll to work
-          <i />
-        </a>
-      </div>
-    </section>
-  );
-}
-
-/* ------------------------------------------------------------- Tagline strip */
-
-function TaglineStrip() {
-  const phrases = [
-    "building since 2020",
-    "local-first ai & product systems",
-    "aleem azhar",
-    "memphis · seoul · remote",
-  ];
-  // Repeat enough times so the track always exceeds 2× viewport width — the
-  // animation translates by exactly -50% so the second half is identical to
-  // the first, producing a seamless loop with zero visible seam.
-  const half = Array.from({ length: 4 }, () => phrases).flat();
-  const items = [...half, ...half];
-  return (
-    <section className="tagline" aria-label="Tagline">
-      <div className="tagline-track">
-        {items.map((phrase, i) => (
-          <span className="tagline-cell" key={i}>
-            <span>{phrase}</span>
-            <em aria-hidden="true">✦</em>
-          </span>
+      <div className="work-strip" aria-label="Project shortcuts">
+        {visible.map(({ index, offset, project }) => (
+          <button
+            key={`${project.slug}-${offset}`}
+            className={offset === 0 ? "is-active" : ""}
+            type="button"
+            onClick={() => setActiveIndex(index)}
+            aria-label={`Show ${project.title}`}
+          >
+            <img src={project.logoMark} alt="" loading="lazy" />
+            <span>{project.title}</span>
+          </button>
         ))}
       </div>
     </section>
   );
 }
 
-/* ------------------------------------------------- Horizontal pinned gallery */
-
-type GallerySlide =
-  | { kind: "project"; project: PortfolioProject; index: number; total: number }
-  | { kind: "quote"; index: number; total: number };
-
-function HorizontalProjects({
-  openProject,
-  reducedMotion,
-}: {
-  openProject: (p: PortfolioProject) => void;
-  reducedMotion: boolean;
-}) {
-  const wrapRef = useRef<HTMLDivElement | null>(null);
-  const trackRef = useRef<HTMLDivElement | null>(null);
-
-  const slides: GallerySlide[] = useMemo(() => {
-    const arr: GallerySlide[] = [];
-    const total = featuredProjects.length + 1;
-    featuredProjects.forEach((p, i) => {
-      arr.push({ kind: "project", project: p, index: i, total });
-      // Inject a quote slide after the third project, like Lando's interspersed quote.
-      if (i === 2) arr.push({ kind: "quote", index: i + 1, total });
-    });
-    return arr;
-  }, []);
-
-  useLayoutEffect(() => {
-    if (reducedMotion) return;
-    const wrap = wrapRef.current;
-    const track = trackRef.current;
-    if (!wrap || !track) return;
-
-    const ctx = gsap.context(() => {
-      ScrollTrigger.matchMedia({
-        "(min-width: 861px)": () => {
-          const tween = gsap.to(track, {
-            x: () => -(track.scrollWidth - window.innerWidth),
-            ease: "none",
-            scrollTrigger: {
-              trigger: wrap,
-              start: "top top",
-              end: () => "+=" + (track.scrollWidth - window.innerWidth),
-              pin: true,
-              scrub: 0.6,
-              invalidateOnRefresh: true,
-              anticipatePin: 1,
-            },
-          });
-          return () => tween.kill();
-        },
-      });
-    }, wrap);
-
-    return () => ctx.revert();
-  }, [reducedMotion]);
-
+function Approach() {
   return (
-    <section className="hp" id="work" ref={wrapRef} aria-label="Selected work">
-      <div className="hp-head">
-        <span>01</span>
-        <h2>Selected Work</h2>
-      </div>
-      <div className="hp-track" ref={trackRef}>
-        {slides.map((slide, i) => {
-          if (slide.kind === "quote") {
-            return (
-              <div className="hp-slide hp-slide-quote" key={`quote-${i}`}>
-                <p>{heroQuote}</p>
-                <span>— Aleem Azhar</span>
-              </div>
-            );
-          }
-          const p = slide.project;
-          return (
-            <button
-              className="hp-slide hp-slide-project"
-              key={p.slug}
-              type="button"
-              onClick={() => openProject(p)}
-              style={{ "--accent": p.accent } as CSSProperties}
-              aria-label={`Open ${p.title}`}
-            >
-              <span className="hp-index">
-                {String(slide.index + 1).padStart(2, "0")}
-                <em>/{String(slide.total).padStart(2, "0")}</em>
-              </span>
-              <div className="hp-art" aria-hidden="true">
-                <img src={p.objectVisual} alt="" />
-              </div>
-              <div className="hp-cap">
-                <strong>{p.title}</strong>
-                <span>{p.year}</span>
-              </div>
-              <div className="hp-meta">
-                <em>{p.eyebrow}</em>
-                <p>{p.short}</p>
-                <i>
-                  Open <ArrowUpRight size={12} />
-                </i>
-              </div>
-            </button>
-          );
-        })}
-      </div>
-    </section>
-  );
-}
+    <section className="approach" id="approach">
+      <header className="section-head section-head-invert">
+        <span>02 / Approach</span>
+        <h2>Design the system, then the screen.</h2>
+        <p>I build around clear hierarchy, visible state, fast interaction, and AI behavior users can inspect.</p>
+      </header>
 
-/* ----------------------------------------------------- Category split panel */
-
-function CategoryColumn({
-  label,
-  caption,
-  items,
-  openProject,
-}: {
-  label: string;
-  caption: string;
-  items: PortfolioProject[];
-  openProject: (p: PortfolioProject) => void;
-}) {
-  return (
-    <div className="csplit-col">
-      <h3 className="csplit-title">
-        {label.split(" ").map((w, i) => (
-          <span key={i}>{w}</span>
+      <div className="approach-grid">
+        {approach.map((item, index) => (
+          <article key={item.title}>
+            <span className="approach-count">{String(index + 1).padStart(2, "0")}</span>
+            <div className="approach-icon" aria-hidden="true">{item.icon}</div>
+            <em>{item.label}</em>
+            <h3>{item.title}</h3>
+            <p>{item.body}</p>
+          </article>
         ))}
-      </h3>
-      <p className="csplit-caption">{caption}</p>
-      <ul className="csplit-list">
-        {items.map((p) => (
-          <li key={p.slug}>
-            <button type="button" onClick={() => openProject(p)}>
-              <img src={p.logoMark} alt="" />
-              <strong>{p.title}</strong>
-              <em>{p.year}</em>
-              <ArrowUpRight size={14} />
-            </button>
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-}
-
-function CategorySplit({ openProject }: { openProject: (p: PortfolioProject) => void }) {
-  return (
-    <section className="csplit" id="categories">
-      <CategoryColumn
-        label="Building"
-        caption="Local-first products, agent runtimes, and operator tools that ship."
-        items={buildProjects}
-        openProject={openProject}
-      />
-      <CategoryColumn
-        label="Researching"
-        caption="Models, satellites, urban data, and experiments still in the lab."
-        items={researchProjects}
-        openProject={openProject}
-      />
+      </div>
     </section>
   );
 }
 
-/* --------------------------------------------------------- Hall of Fame grid */
-
-function ProjectsHallOfFame({
-  openProject,
-}: {
-  openProject: (p: PortfolioProject) => void;
-}) {
+function Background() {
   return (
-    <section className="hof" id="systems">
-      <div className="hof-head">
-        <span>02</span>
-        <h2>
-          <span>Projects</span>
-          <span>Hall of Fame</span>
-        </h2>
-        <p>
-          From local AI tools and agent runtimes to research platforms and product prototypes —
-          every system, archived or shipping.
-        </p>
+    <section className="background" id="background">
+      <div className="background-copy">
+        <span>03 / Background</span>
+        <h2>Software depth with product judgment.</h2>
+        <ul>
+          {backgroundNotes.map((note) => <li key={note}>{note}</li>)}
+        </ul>
       </div>
 
-      <div className="hof-grid">
-        {systemsProjects.map((p) => {
-          const portrait = siteImagery[p.slug];
-          return (
-            <button
-              key={p.slug}
-              className={`hof-card hof-card-${p.tier}${portrait ? " hof-card-portrait" : ""}`}
-              type="button"
-              onClick={() => openProject(p)}
-              style={{ "--accent": p.accent } as CSSProperties}
-            >
-              <div className="hof-art">
-                <img className="hof-mark" src={p.logoMark} alt="" />
-                <img
-                  className="hof-object"
-                  src={portrait ?? p.objectVisual}
-                  alt=""
-                />
-              </div>
-              <div className="hof-meta">
-                <strong>{p.title}</strong>
-                <em>{p.year}</em>
-              </div>
-            </button>
-          );
-        })}
-      </div>
-
-      {archiveProjects.length > 0 && (
-        <div className="hof-archive">
-          <span>Archive</span>
-          <div>
-            {archiveProjects.map((p) => (
-              <button key={p.slug} type="button" onClick={() => openProject(p)}>
-                <img src={p.logoMark} alt="" />
-                <em>{p.title}</em>
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
-    </section>
-  );
-}
-
-/* ------------------------------------------------------------- Milestone CTA */
-
-function MilestoneCTA() {
-  return (
-    <section className="cta" id="milestone">
-      <div className="cta-eyebrow">
-        <span>03 — Recognition</span>
-      </div>
-      <h2 className="cta-title">
-        <span>Rhodes College</span>
-        <span>Computer Science 2026</span>
-      </h2>
-      <p className="cta-body">
-        Graduating with a Computer Science degree from Rhodes College after a study-abroad term in
-        Computer Vision &amp; AI Systems at Yonsei University. Open to full-time roles in software,
-        ML, and product engineering.
-      </p>
-      <a className="cta-btn" href={resumeLinks[0].href} target="_blank" rel="noreferrer">
-        View resume
-        <ArrowUpRight size={14} />
-      </a>
-    </section>
-  );
-}
-
-/* --------------------------------------------------------------- Tools wall */
-
-function ToolsWall() {
-  const tools = useMemo(() => {
-    const counts = new Map<string, number>();
-    projects.forEach((p) => p.stack.forEach((s) => counts.set(s, (counts.get(s) ?? 0) + 1)));
-    return Array.from(counts.entries())
-      .sort((a, b) => b[1] - a[1])
-      .slice(0, 18)
-      .map(([name]) => name);
-  }, []);
-
-  return (
-    <section className="tools" id="tools">
-      <div className="tools-head">
-        <span>04</span>
-        <h2>
-          <span>Tools</span>
-          <span>&amp; Affiliations</span>
-        </h2>
-        <p>The stack and institutions behind the work.</p>
-      </div>
-
-      <ul className="tools-grid">
-        {tools.map((t) => (
-          <li key={t}>{t}</li>
-        ))}
-      </ul>
-
-      <div className="tools-affiliations">
-        {education.map((e) => (
-          <div key={e.institution} className="tools-aff">
-            <img src={e.logo} alt="" />
+      <div className="education-stack" aria-label="Education">
+        {education.map((item) => (
+          <article key={item.institution}>
+            <img src={item.logo} alt="" />
             <div>
-              <strong>{e.institution}</strong>
-              <em>{e.period}</em>
-              <span>{e.location}</span>
+              <strong>{item.institution}</strong>
+              <em>{item.period}</em>
+              <p>{item.focus}</p>
             </div>
-          </div>
+          </article>
         ))}
       </div>
     </section>
   );
 }
-
-/* ------------------------------------------------------------- Socials strip */
 
 function iconFor(label: string) {
-  const l = label.toLowerCase();
-  if (l.includes("github")) return <Github size={16} />;
-  if (l.includes("linked")) return <Linkedin size={16} />;
-  if (l.includes("twitter") || l === "x") return <Twitter size={16} />;
-  if (l.includes("mail") || l.includes("email")) return <Mail size={16} />;
-  return <ArrowUpRight size={16} />;
+  const normalized = label.toLowerCase();
+  if (normalized.includes("github")) return <Github size={18} />;
+  if (normalized.includes("linked")) return <Linkedin size={18} />;
+  if (normalized.includes("mail") || normalized.includes("email")) return <Mail size={18} />;
+  return <ArrowUpRight size={18} />;
 }
 
-function SocialsStrip() {
+function Contact() {
   return (
-    <section className="socials" id="contact">
-      <div className="socials-head">
-        <span>05</span>
-        <h2>
-          <span>What’s New</span>
-          <span>On Socials</span>
-        </h2>
+    <section className="contact" id="contact">
+      <div>
+        <span>04 / Contact</span>
+        <h2>Open to software, ML, and product engineering work.</h2>
       </div>
-      <ul className="socials-list">
-        {socials.map((s) => (
-          <li key={s.label}>
-            <a
-              href={s.href}
-              target={s.external ? "_blank" : undefined}
-              rel={s.external ? "noreferrer" : undefined}
-            >
-              {iconFor(s.label)}
-              <span>{s.label}</span>
+      <ul>
+        {socials.map((social) => (
+          <li key={social.label}>
+            <a href={social.href} target={social.external ? "_blank" : undefined} rel={social.external ? "noreferrer" : undefined}>
+              {iconFor(social.label)}
+              <span>{social.label}</span>
               <ArrowUpRight size={18} />
             </a>
           </li>
@@ -644,113 +436,43 @@ function SocialsStrip() {
   );
 }
 
-/* -------------------------------------------------------------------- Footer */
-
-function FooterAlwaysBuilding() {
-  const year = new Date().getFullYear();
-  return (
-    <footer className="footer">
-      <div className="footer-inner">
-        <h2 className="footer-title">
-          <span>Always</span>
-          <span>Building.</span>
-        </h2>
-        <div className="footer-grid">
-          <div>
-            <span>Pages</span>
-            {navigation.map((n) => (
-              <a key={n.href} href={n.href}>{n.label}</a>
-            ))}
-          </div>
-          <div>
-            <span>Follow</span>
-            {socials.map((s) => (
-              <a
-                key={s.label}
-                href={s.href}
-                target={s.external ? "_blank" : undefined}
-                rel={s.external ? "noreferrer" : undefined}
-              >
-                {s.label}
-              </a>
-            ))}
-          </div>
-          <div>
-            <span>Resume</span>
-            <a href={resumeLinks[0].href} target="_blank" rel="noreferrer">
-              {resumeLinks[0].label}
-            </a>
-          </div>
-          <div className="footer-cta">
-            <span>Business enquiries</span>
-            <a href="mailto:aleemazhar14@gmail.com">aleemazhar14@gmail.com</a>
-          </div>
-        </div>
-        <div className="footer-bottom">
-          <strong>AA</strong>
-          <span>© {year} Muhammad Aleem Azhar. All rights reserved.</span>
-        </div>
-      </div>
-    </footer>
-  );
-}
-
-/* ------------------------------------------------------------- Project sheet */
-
-function ProjectOverlay({
-  project,
-  onClose,
-}: {
-  project: PortfolioProject | null;
-  onClose: () => void;
-}) {
+function ProjectOverlay({ project, onClose }: { project: PortfolioProject | null; onClose: () => void }) {
   useEffect(() => {
     if (!project) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") onClose();
     };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
   }, [project, onClose]);
 
   if (!project) return null;
+
   return (
     <div className="overlay" role="dialog" aria-modal="true" aria-label={project.title}>
-      <button className="overlay-back" type="button" aria-label="Close" onClick={onClose} />
-      <article className="overlay-sheet" style={{ "--accent": project.accent } as CSSProperties}>
-        <button className="overlay-close" type="button" aria-label="Close" onClick={onClose}>
-          <X size={16} />
+      <button className="overlay-bg" type="button" aria-label="Close project" onClick={onClose} />
+      <article className="sheet" style={{ "--accent": project.accent } as CSSProperties}>
+        <button className="sheet-close icon-btn" type="button" aria-label="Close project" onClick={onClose}>
+          <X size={18} />
         </button>
-        <div className="overlay-art">
-          <img src={project.objectVisual} alt="" />
+        <div className="sheet-media" aria-hidden="true">
+          <img src={projectMedia(project)} alt="" />
         </div>
-        <div className="overlay-copy">
-          <span className="overlay-eyebrow">
-            {project.year} — {project.statusLabel} — {project.eyebrow}
-          </span>
+        <div className="sheet-copy">
+          <span>{project.year} / {project.statusLabel} / {groupName(project)}</span>
           <h3>{project.title}</h3>
+          <p className="sheet-thesis">{project.thesis}</p>
           <p>{project.detailCopy}</p>
-          {project.proofPoints.length > 0 && (
-            <ul className="overlay-points">
-              {project.proofPoints.map((pt) => (
-                <li key={pt}>{pt}</li>
-              ))}
-            </ul>
-          )}
-          <div className="overlay-stack">
-            {project.stack.map((t) => (
-              <span key={t}>{t}</span>
-            ))}
+          <ul className="proof-points">
+            {project.proofPoints.map((point) => <li key={point}>{point}</li>)}
+          </ul>
+          <div className="stack-list">
+            {project.stack.map((tool) => <span key={tool}>{tool}</span>)}
           </div>
-          <div className="overlay-actions">
-            {project.links.map((l) => (
-              <a
-                key={l.href}
-                href={l.href}
-                target={l.external ? "_blank" : undefined}
-                rel={l.external ? "noreferrer" : undefined}
-              >
-                {l.label}
+          <div className="sheet-actions">
+            {project.links.map((link) => (
+              <a key={link.href} href={link.href} target={link.external ? "_blank" : undefined} rel={link.external ? "noreferrer" : undefined}>
+                {link.label}
                 <ArrowUpRight size={14} />
               </a>
             ))}
@@ -761,98 +483,33 @@ function ProjectOverlay({
   );
 }
 
-/* ----------------------------------------------------------------------- App */
+function Footer() {
+  return (
+    <footer className="footer">
+      <a href="#top">Aleem Azhar</a>
+      <span>Software / ML / Product</span>
+      <a href="mailto:aleemazhar14@gmail.com">aleemazhar14@gmail.com</a>
+    </footer>
+  );
+}
 
 export default function App() {
-  const reducedMotion = useReducedMotion();
-  const [loaded, setLoaded] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [overlay, setOverlay] = useState<PortfolioProject | null>(null);
 
-  useLenis(reducedMotion);
-
-  useEffect(() => {
-    const t = window.setTimeout(() => setLoaded(true), reducedMotion ? 100 : 900);
-    return () => window.clearTimeout(t);
-  }, [reducedMotion]);
-
-  useEffect(() => {
-    document.body.classList.toggle("overlay-is-open", !!overlay);
-    return () => document.body.classList.remove("overlay-is-open");
-  }, [overlay]);
-
-  // Light scroll-driven flourishes (parallax, fade-ups). Heavy lifting is in HorizontalProjects.
-  useEffect(() => {
-    if (reducedMotion) return;
-    const ctx = gsap.context(() => {
-      gsap.fromTo(
-        ".hero-portrait img",
-        { yPercent: 8, scale: 1.04, opacity: 0 },
-        { yPercent: 0, scale: 1, opacity: 1, duration: 1.4, ease: "power3.out", delay: 0.1 },
-      );
-      gsap.to(".hero-portrait", {
-        yPercent: -12,
-        ease: "none",
-        scrollTrigger: { trigger: ".hero", start: "top top", end: "bottom top", scrub: true },
-      });
-
-      gsap.utils.toArray<HTMLElement>("[data-reveal]").forEach((el) => {
-        gsap.fromTo(
-          el,
-          { y: 40, opacity: 0 },
-          {
-            y: 0,
-            opacity: 1,
-            duration: 0.9,
-            ease: "power3.out",
-            scrollTrigger: { trigger: el, start: "top 85%" },
-          },
-        );
-      });
-
-      gsap.utils.toArray<HTMLElement>(".hof-card").forEach((el, i) => {
-        gsap.fromTo(
-          el,
-          { y: 28, opacity: 0 },
-          {
-            y: 0,
-            opacity: 1,
-            duration: 0.7,
-            ease: "power2.out",
-            delay: (i % 4) * 0.05,
-            scrollTrigger: { trigger: el, start: "top 92%" },
-          },
-        );
-      });
-    });
-    return () => ctx.revert();
-  }, [reducedMotion]);
+  useBodyLock(menuOpen || Boolean(overlay));
 
   return (
     <>
-      <EntryLoader ready={loaded} />
-      <FixedChrome menuOpen={menuOpen} setMenuOpen={setMenuOpen} openProject={setOverlay} />
+      <Chrome menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
       <main>
-        <HeroScene openProject={setOverlay} />
-        <TaglineStrip />
-        <HorizontalProjects openProject={setOverlay} reducedMotion={reducedMotion} />
-        <div data-reveal>
-          <CategorySplit openProject={setOverlay} />
-        </div>
-        <div data-reveal>
-          <ProjectsHallOfFame openProject={setOverlay} />
-        </div>
-        <div data-reveal>
-          <MilestoneCTA />
-        </div>
-        <div data-reveal>
-          <ToolsWall />
-        </div>
-        <div data-reveal>
-          <SocialsStrip />
-        </div>
+        <Hero />
+        <Work openProject={setOverlay} overlayOpen={Boolean(overlay)} />
+        <Approach />
+        <Background />
+        <Contact />
       </main>
-      <FooterAlwaysBuilding />
+      <Footer />
       <ProjectOverlay project={overlay} onClose={() => setOverlay(null)} />
     </>
   );
