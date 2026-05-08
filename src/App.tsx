@@ -417,7 +417,7 @@ function iconFor(label: string) {
 function Contact() {
   return (
     <section className="contact" id="contact">
-      <div>
+      <div className="contact-intro">
         <span>04 / Contact</span>
         <h2>Open to software, ML, and product engineering work.</h2>
       </div>

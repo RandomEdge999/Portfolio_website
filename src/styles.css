@@ -26,6 +26,7 @@
 html {
   background: var(--bg);
   scroll-behavior: smooth;
+  scrollbar-gutter: stable;
   overflow-x: hidden;
 }
 
@@ -483,10 +484,10 @@ section, footer { scroll-margin-top: var(--header); }
 .contact {
   position: relative;
   isolation: isolate;
+  contain: paint;
+  overflow-x: hidden;
   padding: 96px var(--gutter);
 }
-
-.work { overflow: clip; }
 
 .work > *,
 .approach > *,
@@ -515,11 +516,31 @@ section, footer { scroll-margin-top: var(--header); }
   animation: sectionFlow 34s ease-in-out infinite alternate;
 }
 
-.section-head {
+.section-head,
+.background-copy,
+.contact-intro {
   display: grid;
-  gap: 12px;
+  gap: 0;
+}
+
+.section-head {
   max-width: 910px;
   margin-bottom: 34px;
+}
+
+.background-copy {
+  max-width: 900px;
+}
+
+.contact-intro {
+  max-width: 900px;
+}
+
+.section-head > span,
+.background-copy > span,
+.contact-intro > span {
+  display: block;
+  margin-bottom: 12px;
 }
 
 .section-head h2,
@@ -534,11 +555,15 @@ section, footer { scroll-margin-top: var(--header); }
 }
 
 .section-head p {
-  margin: 0;
+  margin: 12px 0 0;
   max-width: 660px;
   color: var(--ink-2);
   font-size: 18px;
   line-height: 1.48;
+}
+
+.background-copy ul {
+  margin-top: 22px;
 }
 
 .work-reel {
@@ -575,7 +600,7 @@ section, footer { scroll-margin-top: var(--header); }
   position: relative;
   grid-area: visual;
   min-height: 520px;
-  overflow: visible;
+  overflow: hidden;
 }
 
 .work-visual::before {
@@ -869,11 +894,12 @@ section, footer { scroll-margin-top: var(--header); }
 
 .background-copy {
   display: grid;
-  gap: 22px;
+  gap: 0;
   max-width: 900px;
 }
 
 .background-copy ul {
+  margin-top: 12px;
   display: grid;
   gap: 12px;
   max-width: 720px;
