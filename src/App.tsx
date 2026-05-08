@@ -1,4 +1,5 @@
 import {
+  ArrowUp,
   ArrowUpRight,
   BrainCircuit,
   ChevronLeft,
@@ -493,6 +494,24 @@ function Footer() {
   );
 }
 
+function BackToTop() {
+  const scrollToTop = () => {
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    window.scrollTo({ top: 0, behavior: reduceMotion ? "auto" : "smooth" });
+  };
+
+  return (
+    <button
+      className="back-to-top"
+      type="button"
+      aria-label="Back to top"
+      onClick={scrollToTop}
+    >
+      <ArrowUp size={18} />
+    </button>
+  );
+}
+
 export default function App() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [overlay, setOverlay] = useState<PortfolioProject | null>(null);
@@ -510,6 +529,7 @@ export default function App() {
         <Contact />
       </main>
       <Footer />
+      <BackToTop />
       <ProjectOverlay project={overlay} onClose={() => setOverlay(null)} />
     </>
   );
