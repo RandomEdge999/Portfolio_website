@@ -485,7 +485,7 @@ section, footer { scroll-margin-top: var(--header); }
   position: relative;
   isolation: isolate;
   contain: paint;
-  overflow-x: hidden;
+  overflow: clip;
   padding: 96px var(--gutter);
 }
 
