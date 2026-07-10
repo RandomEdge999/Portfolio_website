@@ -128,7 +128,9 @@ test("mobile navigation closes after selection and on Escape", async ({ page }) 
   await menu.getByRole("link", { name: "Lab" }).click();
   await expect(menu).not.toHaveAttribute("open", "");
   await expect(page).toHaveURL(/#lab$/);
-  expect(await page.evaluate(() => window.scrollY)).toBeGreaterThan(0);
+  await expect
+    .poll(() => page.evaluate(() => window.scrollY), { message: "mobile navigation should reach the Lab section" })
+    .toBeGreaterThan(0);
 
   await summary.click();
   await page.keyboard.press("Escape");
