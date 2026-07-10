@@ -14,7 +14,7 @@ import {
   Play,
   UsersRound,
 } from "lucide-react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type MouseEvent } from "react";
 import ProjectVisual from "./components/ProjectVisual";
 import SystemMap from "./components/SystemMap";
 import {
@@ -35,6 +35,17 @@ type TransitionDocument = Document & {
 };
 
 const metricIcons = [BarChart3, Database, UsersRound, Award];
+
+function scrollToHomeSection(hash: string) {
+  const destination = document.querySelector<HTMLElement>(hash);
+  if (!destination) return;
+
+  const behavior = window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth";
+  destination.scrollIntoView({ block: "start", behavior });
+  window.requestAnimationFrame(() => {
+    destination.querySelector<HTMLElement>("h1, h2")?.focus({ preventScroll: true });
+  });
+}
 
 function useReveal(dependency?: string | null) {
   useEffect(() => {
@@ -139,7 +150,7 @@ function SectionTitle({
   return (
     <header className={`section-title ${invert ? "section-title-invert" : ""}`} data-reveal>
       <div><span>{index}</span><strong>{label}</strong></div>
-      <h2>{title}</h2>
+      <h2 tabIndex={-1}>{title}</h2>
       <p>{copy}</p>
     </header>
   );
@@ -149,27 +160,43 @@ function Header({
   motionPaused,
   systemReduced,
   onToggleMotion,
+  onNavigate,
   caseMode = false,
 }: {
   motionPaused: boolean;
   systemReduced: boolean;
   onToggleMotion: () => void;
+  onNavigate: (hash: string) => void;
   caseMode?: boolean;
 }) {
   const linkTo = (href: string) => caseMode ? `${import.meta.env.BASE_URL}${href}` : href;
   const mobileNavRef = useRef<HTMLDetailsElement>(null);
   const mobileSummaryRef = useRef<HTMLElement>(null);
   const closeMobileNav = () => mobileNavRef.current?.removeAttribute("open");
+  const handleNavigate = (event: MouseEvent<HTMLAnchorElement>, hash: string) => {
+    event.preventDefault();
+    closeMobileNav();
+    onNavigate(hash);
+  };
 
   return (
     <header className="site-header">
-      <a className="site-brand" href={linkTo("#top")} aria-label="Aleem Azhar, back to top">
+      <a
+        className="site-brand"
+        href={linkTo("#top")}
+        aria-label="Aleem Azhar, back to top"
+        onClick={(event) => handleNavigate(event, "#top")}
+      >
         <span>AA</span>
         <strong>Aleem Azhar</strong>
       </a>
 
       <nav className="desktop-nav" aria-label="Primary navigation">
-        {navigation.map((link) => <a key={link.href} href={linkTo(link.href)}>{link.label}</a>)}
+        {navigation.map((link) => (
+          <a key={link.href} href={linkTo(link.href)} onClick={(event) => handleNavigate(event, link.href)}>
+            {link.label}
+          </a>
+        ))}
       </nav>
 
       <div className="header-actions">
@@ -203,7 +230,7 @@ function Header({
         <summary ref={mobileSummaryRef}>Menu</summary>
         <nav aria-label="Mobile navigation">
           {navigation.map((link) => (
-            <a key={link.href} href={linkTo(link.href)} onClick={closeMobileNav}>
+            <a key={link.href} href={linkTo(link.href)} onClick={(event) => handleNavigate(event, link.href)}>
               {link.label}<ArrowRight size={16} />
             </a>
           ))}
@@ -216,12 +243,12 @@ function Header({
   );
 }
 
-function Hero() {
+function Hero({ onNavigate }: { onNavigate: (hash: string) => void }) {
   return (
     <section className="hero" id="top">
       <div className="hero-copy" data-reveal>
         <p className="hero-eyebrow">Applied AI · ML research · product engineering</p>
-        <h1>
+        <h1 tabIndex={-1}>
           <span>I build AI systems</span>
           <em>you can inspect, steer, and trust.</em>
         </h1>
@@ -229,7 +256,16 @@ function Hero() {
           I’m Aleem Azhar, a research-minded software engineer turning uncertain models and messy workflows into products people can understand and control.
         </p>
         <div className="hero-actions">
-          <a className="button button-primary" href="#work">Explore selected work <ArrowDown size={16} /></a>
+          <a
+            className="button button-primary"
+            href="#work"
+            onClick={(event) => {
+              event.preventDefault();
+              onNavigate("#work");
+            }}
+          >
+            Explore selected work <ArrowDown size={16} />
+          </a>
           <a className="text-action" href="https://github.com/RandomEdge999" target="_blank" rel="noreferrer">View GitHub <ArrowUpRight size={15} /></a>
         </div>
         <div className="hero-location">
@@ -623,10 +659,16 @@ function CaseNotFound({ onBack }: { onBack: () => void }) {
   );
 }
 
-function HomePage({ onOpen }: { onOpen: (project: CaseStudy) => void }) {
+function HomePage({
+  onOpen,
+  onNavigate,
+}: {
+  onOpen: (project: CaseStudy) => void;
+  onNavigate: (hash: string) => void;
+}) {
   return (
     <main id="main">
-      <Hero />
+      <Hero onNavigate={onNavigate} />
       <ProofRail />
       <SelectedWork onOpen={onOpen} />
       <Experience />
@@ -637,12 +679,26 @@ function HomePage({ onOpen }: { onOpen: (project: CaseStudy) => void }) {
   );
 }
 
-function Footer({ caseMode }: { caseMode: boolean }) {
+function Footer({
+  caseMode,
+  onNavigate,
+}: {
+  caseMode: boolean;
+  onNavigate: (hash: string) => void;
+}) {
   return (
     <footer className="site-footer section-dark">
       <strong>Aleem Azhar</strong>
       <span>AI systems / ML research / product engineering</span>
-      <a href={caseMode ? `${import.meta.env.BASE_URL}#top` : "#top"}>Back to top <ArrowUpRight size={14} /></a>
+      <a
+        href={caseMode ? `${import.meta.env.BASE_URL}#top` : "#top"}
+        onClick={(event) => {
+          event.preventDefault();
+          onNavigate("#top");
+        }}
+      >
+        Back to top <ArrowUpRight size={14} />
+      </a>
     </footer>
   );
 }
@@ -663,6 +719,16 @@ export default function App() {
       const nextSlug = readCaseSlug();
       setCaseSlug(nextSlug);
       if (!nextSlug) {
+        const hash = window.location.hash;
+        if (hash) {
+          if (document.querySelector(".case-page, .case-not-found")) {
+            pendingHomeTarget.current = hash;
+            pendingHomeFocus.current = null;
+          } else {
+            window.requestAnimationFrame(() => scrollToHomeSection(hash));
+          }
+          return;
+        }
         const top = typeof event.state?.homeScroll === "number" ? event.state.homeScroll : 0;
         pendingHomeFocus.current = pendingHomeTarget.current
           ? null
@@ -719,6 +785,23 @@ export default function App() {
       }
     });
   }, [caseSlug]);
+
+  const navigateToHomeSection = (hash: string) => {
+    if (caseSlug) {
+      pendingHomeTarget.current = hash;
+      pendingHomeFocus.current = null;
+      const url = new URL(import.meta.env.BASE_URL, window.location.origin);
+      window.history.pushState({ homeNavigation: hash }, "", `${url.pathname}${hash}`);
+      setCaseSlug(null);
+      return;
+    }
+
+    const url = new URL(window.location.href);
+    if (url.hash !== hash) {
+      window.history.pushState({ homeNavigation: hash }, "", `${url.pathname}${url.search}${hash}`);
+    }
+    scrollToHomeSection(hash);
+  };
 
   const openProject = (project: CaseStudy) => {
     const update = () => {
@@ -787,9 +870,24 @@ export default function App() {
 
   return (
     <>
-      <a className="skip-link" href="#main">Skip to content</a>
+      <a
+        className="skip-link"
+        href="#main"
+        onClick={(event) => {
+          event.preventDefault();
+          navigateToHomeSection("#main");
+        }}
+      >
+        Skip to content
+      </a>
       <span className="scroll-progress" ref={progressRef} aria-hidden="true" />
-      <Header motionPaused={motionPaused} systemReduced={systemReduced} onToggleMotion={toggle} caseMode={Boolean(caseSlug)} />
+      <Header
+        motionPaused={motionPaused}
+        systemReduced={systemReduced}
+        onToggleMotion={toggle}
+        onNavigate={navigateToHomeSection}
+        caseMode={Boolean(caseSlug)}
+      />
       {activeProject ? (
         <CaseStudyPage
           project={activeProject}
@@ -801,9 +899,9 @@ export default function App() {
       ) : unknownCase ? (
         <CaseNotFound onBack={() => returnHome()} />
       ) : (
-        <HomePage onOpen={openProject} />
+        <HomePage onOpen={openProject} onNavigate={navigateToHomeSection} />
       )}
-      <Footer caseMode={Boolean(caseSlug)} />
+      <Footer caseMode={Boolean(caseSlug)} onNavigate={navigateToHomeSection} />
     </>
   );
 }

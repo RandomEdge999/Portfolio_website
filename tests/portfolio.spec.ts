@@ -17,6 +17,62 @@ test("home tells the story and stays within the viewport", async ({ page }) => {
   expect(horizontalOverflow).toBeLessThanOrEqual(1);
 });
 
+test("primary navigation reaches aligned home sections and exits case files", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.goto("/");
+
+  const desktopNav = page.locator(".desktop-nav");
+  if (!(await desktopNav.isVisible())) return;
+
+  const heroWork = page.locator(".hero-actions a[href='#work']");
+  await expect(heroWork).toHaveCount(1);
+  await heroWork.click();
+  await expect(page).toHaveURL(/#work$/);
+  expect(await page.evaluate(() => window.scrollY)).toBeGreaterThan(0);
+
+  const brand = page.locator(".site-brand[href='#top']");
+  await expect(brand).toHaveCount(1);
+  await brand.click();
+  await expect(page).toHaveURL(/#top$/);
+  expect(await page.evaluate(() => window.scrollY)).toBe(0);
+
+  for (const label of ["Work", "Experience", "Lab", "About", "Contact"]) {
+    const link = desktopNav.getByRole("link", { name: label, exact: true });
+    await expect(link).toHaveCount(1);
+    await link.click();
+    await expect(page).toHaveURL(new RegExp(`#${label.toLowerCase()}$`));
+
+    const position = await page.evaluate((id) => {
+      const target = document.getElementById(id);
+      const header = document.querySelector(".site-header");
+      return {
+        scrollY: window.scrollY,
+        targetTop: target?.getBoundingClientRect().top ?? -1,
+        headerBottom: header?.getBoundingClientRect().bottom ?? -1,
+      };
+    }, label.toLowerCase());
+    expect(position.scrollY).toBeGreaterThan(0);
+    expect(position.targetTop).toBeGreaterThanOrEqual(position.headerBottom + 8);
+  }
+
+  await page.goBack();
+  await expect(page).toHaveURL(/#about$/);
+  expect(await page.evaluate(() => window.scrollY)).toBeGreaterThan(0);
+
+  const footerTop = page.locator(".site-footer a[href='#top']");
+  await expect(footerTop).toHaveCount(1);
+  await footerTop.click();
+  await expect(page).toHaveURL(/#top$/);
+  expect(await page.evaluate(() => window.scrollY)).toBe(0);
+
+  await page.goto("/?case=agentwarehouse");
+  const caseWork = page.locator(".desktop-nav a[href='/#work']");
+  await expect(caseWork).toHaveCount(1);
+  await caseWork.click();
+  await expect(page).toHaveURL(/#work$/);
+  expect(await page.evaluate(() => new URLSearchParams(window.location.search).has("case"))).toBe(false);
+});
+
 test("case files have durable URLs and deterministic home restoration", async ({ page }) => {
   await page.goto("/");
   await page.getByRole("button", { name: "Open AgentWarehouse case file" }).click();
@@ -72,6 +128,7 @@ test("mobile navigation closes after selection and on Escape", async ({ page }) 
   await menu.getByRole("link", { name: "Lab" }).click();
   await expect(menu).not.toHaveAttribute("open", "");
   await expect(page).toHaveURL(/#lab$/);
+  expect(await page.evaluate(() => window.scrollY)).toBeGreaterThan(0);
 
   await summary.click();
   await page.keyboard.press("Escape");
