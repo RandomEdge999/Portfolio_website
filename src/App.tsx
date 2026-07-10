@@ -441,8 +441,14 @@ function About() {
   return (
     <section className="about-section" id="about">
       <div className="about-image" data-reveal>
-        <img src={identity.portrait} alt="Aleem Azhar in Seoul at night" width="800" height="800" loading="lazy" />
-        <span><i /> Seoul / study abroad / 2024</span>
+        <img
+          src={identity.portrait}
+          alt="Aleem Azhar presenting noise-resilient forecasting research"
+          width="800"
+          height="800"
+          loading="lazy"
+        />
+        <span><i /> Research presentation / noise-resilient forecasting</span>
       </div>
 
       <div className="about-copy" data-reveal>

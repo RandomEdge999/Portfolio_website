@@ -10,7 +10,7 @@ import type {
 } from "../types";
 
 const assets = {
-  portrait: new URL("../../assets/my_image.jpeg", import.meta.url).href,
+  portrait: new URL("../../assets/my_image.png", import.meta.url).href,
 };
 
 const linkedInProfile = "https://linkedin.com/in/m-aleem-azhar";
