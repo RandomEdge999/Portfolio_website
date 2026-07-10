@@ -66,7 +66,7 @@ test("primary navigation reaches aligned home sections and exits case files", as
   expect(await page.evaluate(() => window.scrollY)).toBe(0);
 
   await page.goto("/?case=agentwarehouse");
-  const caseWork = page.locator(".desktop-nav a[href='/#work']");
+  const caseWork = page.locator(".desktop-nav a[href$='#work']");
   await expect(caseWork).toHaveCount(1);
   await caseWork.click();
   await expect(page).toHaveURL(/#work$/);
