@@ -68,3 +68,81 @@ export type EducationItem = {
   focus: string;
   logo: string;
 };
+
+export type SiteLink = {
+  label: string;
+  href: string;
+  external?: boolean;
+};
+
+export type SystemLayer = {
+  id: "interface" | "data" | "model" | "approval";
+  index: string;
+  label: string;
+  title: string;
+  description: string;
+};
+
+export type ProofMetric = {
+  value: string;
+  label: string;
+  context: string;
+};
+
+export type CaseStudyVisual = "agents" | "forecast" | "operator" | "telemetry";
+
+export type CaseStudy = {
+  slug: string;
+  number: string;
+  title: string;
+  headline: string;
+  kicker: string;
+  stage: string;
+  year: string;
+  summary: string;
+  challenge: string;
+  approach: string;
+  outcome: string;
+  scope: string;
+  stack: string[];
+  proofPoints: string[];
+  visual: CaseStudyVisual;
+  links: SiteLink[];
+};
+
+export type ExperienceEntry = {
+  period: string;
+  role: string;
+  organization: string;
+  location?: string;
+  summary: string;
+  signals: string[];
+  featured?: boolean;
+};
+
+export type LabCategory = "ai-tools" | "ml-data" | "product-systems";
+
+export type LabProject = {
+  title: string;
+  description: string;
+  category: LabCategory;
+  categoryLabel: string;
+  year: string;
+  stage: string;
+  stack: string[];
+  href?: string;
+};
+
+export type Capability = {
+  number: string;
+  title: string;
+  description: string;
+  tools: string[];
+};
+
+export type Recognition = {
+  title: string;
+  issuer: string;
+  date: string;
+  detail: string;
+};

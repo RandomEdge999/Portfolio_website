@@ -1,404 +1,320 @@
 import {
-  ArrowUp,
+  ArrowDown,
+  ArrowRight,
   ArrowUpRight,
-  BrainCircuit,
-  ChevronLeft,
-  ChevronRight,
-  Code2,
-  FileText,
+  Award,
+  BarChart3,
+  Database,
+  ExternalLink,
   Github,
   Linkedin,
   Mail,
-  Menu,
-  MonitorCog,
-  X,
+  MapPin,
+  Pause,
+  Play,
+  UsersRound,
 } from "lucide-react";
-import { useEffect, useState, type CSSProperties } from "react";
-import { education, navigation, projects, resumeLinks, socials } from "./data/portfolio";
-import type { PortfolioProject, VisualGroup } from "./types";
+import { useEffect, useMemo, useRef, useState } from "react";
+import ProjectVisual from "./components/ProjectVisual";
+import SystemMap from "./components/SystemMap";
+import {
+  capabilities,
+  caseStudies,
+  experience,
+  identity,
+  labProjects,
+  navigation,
+  proofMetrics,
+  recognition,
+  socials,
+} from "./data/site";
+import type { CaseStudy, LabCategory } from "./types";
 
-const reelProjects = projects;
-const AUTO_ADVANCE_MS = 6200;
-
-const groupLabels: Record<VisualGroup, string> = {
-  operator: "Product automation",
-  agent: "Agent workflow",
-  city: "Civic telemetry",
-  education: "Institution tooling",
-  model: "Applied ML",
-  vision: "Vision interface",
-  reader: "Reader tooling",
-  satellite: "Research ops",
-  marketplace: "Marketplace",
-  history: "Data story",
-  utility: "Developer tooling",
-  creative: "Creative product",
-  archive: "Archive",
+type TransitionDocument = Document & {
+  startViewTransition?: (update: () => void) => { finished: Promise<void> };
 };
 
-const approach = [
-  {
-    title: "Interface First",
-    label: "Product feel",
-    icon: <Code2 size={21} />,
-    body: "The screen should explain the system: hierarchy, motion, responsive layout, and state that never feels hidden.",
-  },
-  {
-    title: "Human Control",
-    label: "AI workflow",
-    icon: <BrainCircuit size={21} />,
-    body: "Automation is strongest when approvals, traces, confidence, and failure modes are visible before anything important happens.",
-  },
-  {
-    title: "Whole System",
-    label: "Build depth",
-    icon: <MonitorCog size={21} />,
-    body: "I care about the browser, API, database, model, and deployment surface because users feel the gaps between them.",
-  },
-];
+const metricIcons = [BarChart3, Database, UsersRound, Award];
 
-const backgroundNotes = [
-  "Computer science student at Rhodes College, graduating 2026.",
-  "Work sits between full-stack product engineering, applied ML, and local-first automation.",
-  "Most projects are built as operating surfaces: approval flows, dashboards, evaluation loops, and research tools.",
-];
-
-function projectMedia(project: PortfolioProject) {
-  return project.objectVisual;
-}
-
-function groupName(project: PortfolioProject) {
-  return groupLabels[project.galleryGroup];
-}
-
-function useBodyLock(locked: boolean) {
+function useReveal(dependency?: string | null) {
   useEffect(() => {
-    document.documentElement.classList.toggle("is-locked", locked);
-    document.body.classList.toggle("is-locked", locked);
-    return () => {
-      document.documentElement.classList.remove("is-locked");
-      document.body.classList.remove("is-locked");
-    };
-  }, [locked]);
+    const items = Array.from(document.querySelectorAll<HTMLElement>("[data-reveal]"));
+    if (!items.length) return;
+
+    if (
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches
+      || !("IntersectionObserver" in window)
+    ) {
+      items.forEach((item) => item.classList.add("is-revealed"));
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          entry.target.classList.add("is-revealed");
+          observer.unobserve(entry.target);
+        });
+      },
+      { rootMargin: "0px 0px -12%", threshold: 0.12 },
+    );
+
+    items.forEach((item) => observer.observe(item));
+    return () => observer.disconnect();
+  }, [dependency]);
 }
 
-function usePrefersReducedMotion() {
-  const [reduced, setReduced] = useState(false);
+function useScrollProgress() {
+  const progressRef = useRef<HTMLSpanElement>(null);
+
+  useEffect(() => {
+    let frame = 0;
+    const update = () => {
+      frame = 0;
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = max > 0 ? Math.min(window.scrollY / max, 1) : 0;
+      progressRef.current?.style.setProperty("--scroll-progress", String(progress));
+    };
+    const onScroll = () => {
+      if (!frame) frame = window.requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      if (frame) window.cancelAnimationFrame(frame);
+    };
+  }, []);
+
+  return progressRef;
+}
+
+function useMotionControl() {
+  const [systemReduced, setSystemReduced] = useState(false);
+  const [userPaused, setUserPaused] = useState(false);
 
   useEffect(() => {
     const query = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const update = () => setReduced(query.matches);
+    const update = () => setSystemReduced(query.matches);
     update();
+    setUserPaused(window.localStorage.getItem("portfolio-motion") === "paused");
     query.addEventListener("change", update);
     return () => query.removeEventListener("change", update);
   }, []);
 
-  return reduced;
+  const motionPaused = systemReduced || userPaused;
+
+  useEffect(() => {
+    document.documentElement.classList.toggle("motion-paused", motionPaused);
+  }, [motionPaused]);
+
+  const toggle = () => {
+    if (systemReduced) return;
+    setUserPaused((paused) => {
+      const next = !paused;
+      window.localStorage.setItem("portfolio-motion", next ? "paused" : "enabled");
+      return next;
+    });
+  };
+
+  return { motionPaused, systemReduced, toggle };
 }
 
-function Chrome({ menuOpen, setMenuOpen }: { menuOpen: boolean; setMenuOpen: (open: boolean) => void }) {
-  useEffect(() => {
-    if (!menuOpen) return;
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setMenuOpen(false);
-    };
-    window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
-  }, [menuOpen, setMenuOpen]);
-
+function SectionTitle({
+  index,
+  label,
+  title,
+  copy,
+  invert = false,
+}: {
+  index: string;
+  label: string;
+  title: string;
+  copy: string;
+  invert?: boolean;
+}) {
   return (
-    <>
-      <header className="chrome" aria-label="Primary navigation">
-        <a className="brand" href="#top" aria-label="Aleem Azhar home">
-          <span>AA</span>
-          <strong>Aleem Azhar</strong>
-        </a>
-
-        <nav className="nav" aria-label="Sections">
-          {navigation.map((item) => (
-            <a key={item.href} href={item.href}>{item.label}</a>
-          ))}
-        </nav>
-
-        <div className="chrome-actions">
-          <a className="icon-btn" href={resumeLinks[0].href} target="_blank" rel="noreferrer" aria-label="Open resume">
-            <FileText size={17} />
-          </a>
-          <button
-            className="icon-btn"
-            type="button"
-            aria-label={menuOpen ? "Close menu" : "Open menu"}
-            aria-expanded={menuOpen}
-            onClick={() => setMenuOpen(!menuOpen)}
-          >
-            {menuOpen ? <X size={18} /> : <Menu size={18} />}
-          </button>
-        </div>
-      </header>
-
-      <button
-        className={`drawer-shade ${menuOpen ? "is-open" : ""}`}
-        type="button"
-        aria-label="Close menu"
-        aria-hidden={!menuOpen}
-        tabIndex={menuOpen ? 0 : -1}
-        onClick={() => setMenuOpen(false)}
-      />
-
-      <aside className={`drawer ${menuOpen ? "is-open" : ""}`} aria-hidden={!menuOpen}>
-        <div className="drawer-top">
-          <span>Menu</span>
-          <button className="icon-btn" type="button" aria-label="Close menu" onClick={() => setMenuOpen(false)}>
-            <X size={18} />
-          </button>
-        </div>
-        <nav className="drawer-nav" aria-label="Mobile sections">
-          {navigation.map((item, index) => (
-            <a key={item.href} href={item.href} onClick={() => setMenuOpen(false)}>
-              <em>{String(index + 1).padStart(2, "0")}</em>
-              {item.label}
-            </a>
-          ))}
-        </nav>
-        <div className="drawer-note">
-          <span>Focus</span>
-          <p>Software engineering, applied ML, and product interfaces built with control and taste.</p>
-        </div>
-      </aside>
-    </>
+    <header className={`section-title ${invert ? "section-title-invert" : ""}`} data-reveal>
+      <div><span>{index}</span><strong>{label}</strong></div>
+      <h2>{title}</h2>
+      <p>{copy}</p>
+    </header>
   );
 }
 
-function wrapIndex(index: number, total: number) {
-  return (index + total) % total;
+function Header({
+  motionPaused,
+  systemReduced,
+  onToggleMotion,
+  caseMode = false,
+}: {
+  motionPaused: boolean;
+  systemReduced: boolean;
+  onToggleMotion: () => void;
+  caseMode?: boolean;
+}) {
+  const linkTo = (href: string) => caseMode ? `${import.meta.env.BASE_URL}${href}` : href;
+  const mobileNavRef = useRef<HTMLDetailsElement>(null);
+  const mobileSummaryRef = useRef<HTMLElement>(null);
+  const closeMobileNav = () => mobileNavRef.current?.removeAttribute("open");
+
+  return (
+    <header className="site-header">
+      <a className="site-brand" href={linkTo("#top")} aria-label="Aleem Azhar, back to top">
+        <span>AA</span>
+        <strong>Aleem Azhar</strong>
+      </a>
+
+      <nav className="desktop-nav" aria-label="Primary navigation">
+        {navigation.map((link) => <a key={link.href} href={linkTo(link.href)}>{link.label}</a>)}
+      </nav>
+
+      <div className="header-actions">
+        <span className="availability"><i /> Open to new roles</span>
+        <button
+          className="motion-toggle"
+          type="button"
+          onClick={onToggleMotion}
+          disabled={systemReduced}
+          aria-pressed={motionPaused}
+          title={systemReduced ? "Motion is reduced by your system preference" : motionPaused ? "Enable decorative motion" : "Pause decorative motion"}
+        >
+          {motionPaused ? <Play size={15} /> : <Pause size={15} />}
+          <span>{systemReduced ? "Motion reduced" : motionPaused ? "Motion off" : "Motion on"}</span>
+        </button>
+        <a className="resume-link" href={identity.linkedIn} target="_blank" rel="noreferrer">
+          Profile <Linkedin size={15} />
+        </a>
+      </div>
+
+      <details
+        className="mobile-nav"
+        ref={mobileNavRef}
+        onKeyDown={(event) => {
+          if (event.key !== "Escape" || !mobileNavRef.current?.open) return;
+          event.preventDefault();
+          closeMobileNav();
+          mobileSummaryRef.current?.focus();
+        }}
+      >
+        <summary ref={mobileSummaryRef}>Menu</summary>
+        <nav aria-label="Mobile navigation">
+          {navigation.map((link) => (
+            <a key={link.href} href={linkTo(link.href)} onClick={closeMobileNav}>
+              {link.label}<ArrowRight size={16} />
+            </a>
+          ))}
+          <a href={identity.linkedIn} target="_blank" rel="noreferrer" onClick={closeMobileNav}>
+            Profile<Linkedin size={16} />
+          </a>
+        </nav>
+      </details>
+    </header>
+  );
 }
 
 function Hero() {
   return (
     <section className="hero" id="top">
-      <div className="hero-copy">
-        <p className="eyebrow">Software engineer / applied ML / product interfaces</p>
+      <div className="hero-copy" data-reveal>
+        <p className="hero-eyebrow">Applied AI · ML research · product engineering</p>
         <h1>
-          <span>Aleem</span>
-          <span>Azhar</span>
+          <span>I build AI systems</span>
+          <em>you can inspect, steer, and trust.</em>
         </h1>
-        <p className="hero-line">
-          I design and build interactive software where the interface, the data model, and the AI behavior have to line up.
+        <p className="hero-intro">
+          I’m Aleem Azhar, a research-minded software engineer turning uncertain models and messy workflows into products people can understand and control.
         </p>
         <div className="hero-actions">
-          <a className="primary-link" href="#work">Explore work <ArrowUpRight size={15} /></a>
-          <a className="quiet-link" href="#contact">Contact <ArrowUpRight size={14} /></a>
+          <a className="button button-primary" href="#work">Explore selected work <ArrowDown size={16} /></a>
+          <a className="text-action" href="https://github.com/RandomEdge999" target="_blank" rel="noreferrer">View GitHub <ArrowUpRight size={15} /></a>
+        </div>
+        <div className="hero-location">
+          <MapPin size={15} />
+          <span>Memphis, Tennessee</span>
+          <i />
+          <span>Computer Science + Statistics</span>
         </div>
       </div>
 
-      <div className="hero-visual" aria-hidden="true">
-        <svg className="hero-field" viewBox="0 0 720 620" role="presentation" focusable="false">
-          <defs>
-            <linearGradient id="heroRibbon" x1="64" x2="660" y1="548" y2="62" gradientUnits="userSpaceOnUse">
-              <stop offset="0" stopColor="#78d7d0" stopOpacity="0.1" />
-              <stop offset="0.38" stopColor="#d8ff2f" stopOpacity="0.72" />
-              <stop offset="1" stopColor="#f4b15b" stopOpacity="0.16" />
-            </linearGradient>
-            <linearGradient id="heroThread" x1="42" x2="690" y1="250" y2="350" gradientUnits="userSpaceOnUse">
-              <stop offset="0" stopColor="#f5f0e5" stopOpacity="0" />
-              <stop offset="0.45" stopColor="#d8ff2f" stopOpacity="0.84" />
-              <stop offset="1" stopColor="#78d7d0" stopOpacity="0" />
-            </linearGradient>
-            <filter id="heroGlow" x="-30%" y="-30%" width="160%" height="160%">
-              <feGaussianBlur stdDeviation="16" result="blur" />
-              <feMerge>
-                <feMergeNode in="blur" />
-                <feMergeNode in="SourceGraphic" />
-              </feMerge>
-            </filter>
-          </defs>
+      <div className="hero-system" data-reveal>
+        <SystemMap />
+      </div>
 
-          <path className="field-ribbon field-ribbon-back" d="M38 454C126 298 236 242 350 284C462 326 480 158 612 96C676 66 706 76 736 96" />
-          <path className="field-ribbon field-ribbon-main" d="M-22 386C90 278 202 244 316 286C434 330 492 244 552 170C596 116 646 86 734 80" />
-          <path className="field-ribbon field-ribbon-low" d="M30 536C126 492 198 482 302 506C414 532 474 456 544 382C602 320 664 300 740 326" />
-
-          <g className="field-threads">
-            <path d="M22 328C132 264 246 258 358 304C464 348 536 294 690 184" />
-            <path d="M84 186C188 160 298 174 406 226C510 276 590 250 704 164" />
-            <path d="M54 486C166 448 274 454 374 486C486 522 582 468 702 380" />
-            <path d="M142 88C238 132 308 178 404 170C512 162 584 92 710 42" />
-          </g>
-
-          <g className="field-contours">
-            <path d="M188 426C136 342 158 246 238 194C320 140 438 156 500 232C558 304 536 422 454 480C370 538 244 518 188 426Z" />
-            <path d="M248 394C212 336 228 266 284 230C342 192 426 204 470 258C512 312 496 394 436 434C376 474 288 458 248 394Z" />
-            <path d="M520 234C486 184 496 122 548 92C604 60 676 82 708 136C738 186 718 254 662 282C610 308 554 284 520 234Z" />
-          </g>
-
-          <g className="field-nodes">
-            <path d="M150 326l10 6-10 6-10-6z" />
-            <path d="M488 214l10 6-10 6-10-6z" />
-            <path d="M606 126l10 6-10 6-10-6z" />
-            <path d="M382 502l10 6-10 6-10-6z" />
-          </g>
-        </svg>
+      <div className="hero-footnote" aria-hidden="true">
+        <span>Control</span><i /><span>Clarity</span><i /><span>Consequence</span>
       </div>
     </section>
   );
 }
 
-function visibleProjects(activeIndex: number) {
-  return [-2, -1, 0, 1, 2].map((offset) => {
-    const index = wrapIndex(activeIndex + offset, reelProjects.length);
-    return { index, offset, project: reelProjects[index] };
-  });
-}
-
-function Work({ openProject, overlayOpen }: { openProject: (project: PortfolioProject) => void; overlayOpen: boolean }) {
-  const reducedMotion = usePrefersReducedMotion();
-  const [activeIndex, setActiveIndex] = useState(0);
-  const activeProject = reelProjects[activeIndex];
-  const previousProject = reelProjects[wrapIndex(activeIndex - 1, reelProjects.length)];
-  const nextProject = reelProjects[wrapIndex(activeIndex + 1, reelProjects.length)];
-  const visible = visibleProjects(activeIndex);
-  const goPrevious = () => setActiveIndex((index) => wrapIndex(index - 1, reelProjects.length));
-  const goNext = () => setActiveIndex((index) => wrapIndex(index + 1, reelProjects.length));
-
-  useEffect(() => {
-    const onKeyDown = (event: KeyboardEvent) => {
-      const target = event.target as HTMLElement | null;
-      const typing = target?.tagName === "INPUT" || target?.tagName === "TEXTAREA" || target?.isContentEditable;
-      if (typing || document.querySelector(".overlay") || document.querySelector(".drawer.is-open")) return;
-      if (event.key === "ArrowLeft") {
-        event.preventDefault();
-        setActiveIndex((index) => wrapIndex(index - 1, reelProjects.length));
-      }
-      if (event.key === "ArrowRight") {
-        event.preventDefault();
-        setActiveIndex((index) => wrapIndex(index + 1, reelProjects.length));
-      }
-    };
-    window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
-  }, []);
-
-  useEffect(() => {
-    if (overlayOpen || reducedMotion) return;
-    const timer = window.setTimeout(() => {
-      setActiveIndex((index) => wrapIndex(index + 1, reelProjects.length));
-    }, AUTO_ADVANCE_MS);
-    return () => window.clearTimeout(timer);
-  }, [activeIndex, overlayOpen, reducedMotion]);
-
-  useEffect(() => {
-    visibleProjects(activeIndex).forEach(({ project }) => {
-      const image = new Image();
-      image.src = projectMedia(project);
-    });
-  }, [activeIndex]);
-
-  const reelStyle = {
-    "--accent": activeProject.accent,
-    "--reel-duration": `${AUTO_ADVANCE_MS}ms`,
-  } as CSSProperties;
-
+function ProofRail() {
   return (
-    <section className="work" id="work" style={reelStyle}>
-      <header className="section-head work-head">
-        <span>01 / Work</span>
-        <h2>Builds in motion.</h2>
-        <p>A focused reel across the full project history: agent tools, automation systems, ML experiments, and product interfaces.</p>
-      </header>
-
-      <div className={`work-reel ${overlayOpen || reducedMotion ? "is-paused" : ""}`}>
-        <div className="work-visual" aria-hidden="true">
-          <img className="work-object work-object-back" src={projectMedia(previousProject)} alt="" loading="lazy" />
-          <img key={activeProject.slug} className="work-object work-object-active" src={projectMedia(activeProject)} alt="" loading="eager" />
-          <img className="work-object work-object-front" src={projectMedia(nextProject)} alt="" loading="lazy" />
-        </div>
-
-        <div className="work-copy" aria-live="polite">
-          <span className="work-count">{String(activeIndex + 1).padStart(2, "0")} / {String(reelProjects.length).padStart(2, "0")}</span>
-          <span>{groupName(activeProject)} / {activeProject.year}</span>
-          <button type="button" onClick={() => openProject(activeProject)} aria-label={`Open ${activeProject.title}`}>
-            <strong>{activeProject.title}</strong>
-            <ArrowUpRight size={17} />
-          </button>
-          <p>{activeProject.short}</p>
-          <div className="work-stack" aria-label="Project stack">
-            {activeProject.stack.slice(0, 4).map((tool) => <span key={tool}>{tool}</span>)}
-          </div>
-        </div>
-
-        <div className="work-controls" aria-label="Browse projects">
-          <button type="button" onClick={goPrevious} aria-label="Previous project">
-            <ChevronLeft size={20} />
-          </button>
-          <span className="work-progress" aria-hidden="true">
-            <span key={`${activeProject.slug}-${activeIndex}`} />
-          </span>
-          <button type="button" onClick={goNext} aria-label="Next project">
-            <ChevronRight size={20} />
-          </button>
-        </div>
-      </div>
-
-      <div className="work-strip" aria-label="Project shortcuts">
-        {visible.map(({ index, offset, project }) => (
-          <button
-            key={`${project.slug}-${offset}`}
-            className={offset === 0 ? "is-active" : ""}
-            type="button"
-            onClick={() => setActiveIndex(index)}
-            aria-label={`Show ${project.title}`}
-          >
-            <img src={project.logoMark} alt="" loading="lazy" />
-            <span>{project.title}</span>
-          </button>
-        ))}
-      </div>
-    </section>
-  );
-}
-
-function Approach() {
-  return (
-    <section className="approach" id="approach">
-      <header className="section-head section-head-invert">
-        <span>02 / Approach</span>
-        <h2>Design the system, then the screen.</h2>
-        <p>I build around clear hierarchy, visible state, fast interaction, and AI behavior users can inspect.</p>
-      </header>
-
-      <div className="approach-grid">
-        {approach.map((item, index) => (
-          <article key={item.title}>
-            <span className="approach-count">{String(index + 1).padStart(2, "0")}</span>
-            <div className="approach-icon" aria-hidden="true">{item.icon}</div>
-            <em>{item.label}</em>
-            <h3>{item.title}</h3>
-            <p>{item.body}</p>
-          </article>
-        ))}
-      </div>
-    </section>
-  );
-}
-
-function Background() {
-  return (
-    <section className="background" id="background">
-      <div className="background-copy">
-        <span>03 / Background</span>
-        <h2>Software depth with product judgment.</h2>
-        <ul>
-          {backgroundNotes.map((note) => <li key={note}>{note}</li>)}
-        </ul>
-      </div>
-
-      <div className="education-stack" aria-label="Education">
-        {education.map((item) => (
-          <article key={item.institution}>
-            <img src={item.logo} alt="" />
+    <section className="proof-rail" aria-label="Selected outcomes">
+      {proofMetrics.map((metric, index) => {
+        const Icon = metricIcons[index];
+        return (
+          <article key={metric.label} data-reveal>
+            <Icon size={24} strokeWidth={1.5} aria-hidden="true" />
+            <strong>{metric.value}</strong>
             <div>
-              <strong>{item.institution}</strong>
-              <em>{item.period}</em>
-              <p>{item.focus}</p>
+              <span>{metric.label}</span>
+              <p>{metric.context}</p>
+            </div>
+          </article>
+        );
+      })}
+    </section>
+  );
+}
+
+function SelectedWork({ onOpen }: { onOpen: (project: CaseStudy) => void }) {
+  return (
+    <section className="selected-work section-dark" id="work">
+      <SectionTitle
+        index="01"
+        label="Selected systems"
+        title="Control, clarity, and consequence."
+        copy="Four case files across agent tooling, machine-learning research, local-first automation, and scientific data. Every system is labeled by its real maturity."
+        invert
+      />
+
+      <div className="case-list">
+        {caseStudies.map((project, index) => (
+          <article className={`case-study ${index % 2 ? "case-study-reverse" : ""}`} id={project.slug} key={project.slug} data-reveal>
+            <div className="case-study-copy">
+              <div className="case-meta">
+                <span>{project.number}</span>
+                <strong>{project.kicker}</strong>
+                <i />
+                <em>{project.stage}</em>
+              </div>
+              <h3>{project.headline}</h3>
+              <p>{project.summary}</p>
+              <dl>
+                <div><dt>System</dt><dd>{project.title}</dd></div>
+                <div><dt>Scope</dt><dd>{project.scope}</dd></div>
+                <div><dt>Year</dt><dd>{project.year}</dd></div>
+              </dl>
+              <div className="case-stack" aria-label={`${project.title} technology stack`}>
+                {project.stack.map((tool) => <span key={tool}>{tool}</span>)}
+              </div>
+              <button
+                className="case-open"
+                type="button"
+                data-case-trigger={project.slug}
+                aria-label={`Open ${project.title} case file`}
+                onClick={() => onOpen(project)}
+              >
+                Open case file <ArrowUpRight size={16} />
+              </button>
+            </div>
+            <div className="case-study-media">
+              <ProjectVisual visual={project.visual} />
+              <span className="media-caption">System illustration / {project.title}</span>
             </div>
           </article>
         ))}
@@ -407,130 +323,481 @@ function Background() {
   );
 }
 
-function iconFor(label: string) {
-  const normalized = label.toLowerCase();
-  if (normalized.includes("github")) return <Github size={18} />;
-  if (normalized.includes("linked")) return <Linkedin size={18} />;
-  if (normalized.includes("mail") || normalized.includes("email")) return <Mail size={18} />;
-  return <ArrowUpRight size={18} />;
-}
-
-function Contact() {
+function Experience() {
   return (
-    <section className="contact" id="contact">
-      <div className="contact-intro">
-        <span>04 / Contact</span>
-        <h2>Open to software, ML, and product engineering work.</h2>
+    <section className="experience-section" id="experience">
+      <SectionTitle
+        index="02"
+        label="Experience & research"
+        title="Engineering shaped by real operations."
+        copy="Research, financial-data workflows, scientific telemetry, and teaching all reinforce the same habit: make complicated behavior explainable."
+      />
+
+      <div className="experience-layout">
+        <div className="experience-statement" data-reveal>
+          <p>
+            The useful layer is often between a clever demo and a dependable system—evaluation, failure modes, operator control, and a clear interface.
+          </p>
+          <span>B.S. Computer Science · Statistics minor · Rhodes College · 2026</span>
+        </div>
+        <ol className="timeline">
+          {experience.map((entry) => (
+            <li className={entry.featured ? "is-featured" : ""} key={`${entry.period}-${entry.role}`} data-reveal>
+              <time>{entry.period}</time>
+              <div>
+                <h3>{entry.role}</h3>
+                <strong>{entry.organization}{entry.location ? ` · ${entry.location}` : ""}</strong>
+                <p>{entry.summary}</p>
+                <ul>{entry.signals.map((signal) => <li key={signal}>{signal}</li>)}</ul>
+              </div>
+            </li>
+          ))}
+        </ol>
       </div>
-      <ul>
-        {socials.map((social) => (
-          <li key={social.label}>
-            <a href={social.href} target={social.external ? "_blank" : undefined} rel={social.external ? "noreferrer" : undefined}>
-              {iconFor(social.label)}
-              <span>{social.label}</span>
-              <ArrowUpRight size={18} />
-            </a>
-          </li>
+
+      <div className="capabilities-grid">
+        {capabilities.map((capability) => (
+          <article key={capability.number} data-reveal>
+            <span>{capability.number}</span>
+            <h3>{capability.title}</h3>
+            <p>{capability.description}</p>
+            <ul>{capability.tools.map((tool) => <li key={tool}>{tool}</li>)}</ul>
+          </article>
         ))}
-      </ul>
+      </div>
     </section>
   );
 }
 
-function ProjectOverlay({ project, onClose }: { project: PortfolioProject | null; onClose: () => void }) {
-  useEffect(() => {
-    if (!project) return;
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") onClose();
-    };
-    window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
-  }, [project, onClose]);
+const filters: { label: string; value: "all" | LabCategory }[] = [
+  { label: "All", value: "all" },
+  { label: "AI tools", value: "ai-tools" },
+  { label: "ML & data", value: "ml-data" },
+  { label: "Product systems", value: "product-systems" },
+];
 
-  if (!project) return null;
+function Lab() {
+  const [filter, setFilter] = useState<"all" | LabCategory>("all");
+  const visibleProjects = useMemo(
+    () => filter === "all" ? labProjects : labProjects.filter((project) => project.category === filter),
+    [filter],
+  );
 
   return (
-    <div className="overlay" role="dialog" aria-modal="true" aria-label={project.title}>
-      <button className="overlay-bg" type="button" aria-label="Close project" onClick={onClose} />
-      <article className="sheet" style={{ "--accent": project.accent } as CSSProperties}>
-        <button className="sheet-close icon-btn" type="button" aria-label="Close project" onClick={onClose}>
-          <X size={18} />
-        </button>
-        <div className="sheet-media" aria-hidden="true">
-          <img src={projectMedia(project)} alt="" />
+    <section className="lab-section" id="lab">
+      <SectionTitle
+        index="03"
+        label="Lab index"
+        title="The broader build trail."
+        copy="Smaller tools, platform work, and focused experiments stay visible without competing with the four flagship case studies."
+      />
+
+      <div className="lab-toolbar" data-reveal>
+        <div role="group" aria-label="Filter lab projects">
+          {filters.map((item) => (
+            <button
+              className={filter === item.value ? "is-active" : ""}
+              key={item.value}
+              type="button"
+              aria-pressed={filter === item.value}
+              onClick={() => setFilter(item.value)}
+            >
+              {item.label}
+            </button>
+          ))}
         </div>
-        <div className="sheet-copy">
-          <span>{project.year} / {project.statusLabel} / {groupName(project)}</span>
-          <h3>{project.title}</h3>
-          <p className="sheet-thesis">{project.thesis}</p>
-          <p>{project.detailCopy}</p>
-          <ul className="proof-points">
-            {project.proofPoints.map((point) => <li key={point}>{point}</li>)}
-          </ul>
-          <div className="stack-list">
-            {project.stack.map((tool) => <span key={tool}>{tool}</span>)}
-          </div>
-          <div className="sheet-actions">
-            {project.links.map((link) => (
-              <a key={link.href} href={link.href} target={link.external ? "_blank" : undefined} rel={link.external ? "noreferrer" : undefined}>
-                {link.label}
-                <ArrowUpRight size={14} />
-              </a>
-            ))}
-          </div>
-        </div>
-      </article>
-    </div>
+        <span>{String(visibleProjects.length).padStart(2, "0")} projects</span>
+      </div>
+
+      <div className="lab-list" aria-live="polite">
+        {visibleProjects.map((project, index) => (
+          <a
+            className="lab-row"
+            href={project.href}
+            key={project.title}
+            target="_blank"
+            rel="noreferrer"
+            data-reveal
+          >
+            <span>{String(index + 1).padStart(2, "0")}</span>
+            <div>
+              <h3>{project.title}</h3>
+              <p>{project.description}</p>
+            </div>
+            <div className="lab-row-meta">
+              <strong>{project.categoryLabel}</strong>
+              <em>{project.stage} · {project.year}</em>
+              <span>{project.stack.join(" / ")}</span>
+            </div>
+            <ExternalLink size={18} />
+          </a>
+        ))}
+      </div>
+    </section>
   );
 }
 
-function Footer() {
+function About() {
   return (
-    <footer className="footer">
-      <a href="#top">Aleem Azhar</a>
-      <span>Software / ML / Product</span>
-      <a href="mailto:aleemazhar14@gmail.com">aleemazhar14@gmail.com</a>
+    <section className="about-section" id="about">
+      <div className="about-image" data-reveal>
+        <img src={identity.portrait} alt="Aleem Azhar in Seoul at night" width="800" height="800" loading="lazy" />
+        <span><i /> Seoul / study abroad / 2024</span>
+      </div>
+
+      <div className="about-copy" data-reveal>
+        <span>04 / About</span>
+        <h2>A technical practice with a human point of view.</h2>
+        <p className="about-lead">
+          I care about the layer between a clever demo and a dependable system: evaluation, failure modes, operator control, and a clear interface.
+        </p>
+        <p>
+          My background combines computer science and statistics with forecasting research, financial-data operations, satellite telemetry, and technical teaching. Whether I’m modeling residual noise or designing an approval queue, I want the system’s behavior to stay visible—and useful—to the person relying on it.
+        </p>
+        <p>
+          That range is intentional. I’m most effective where machine learning, product engineering, and real operational constraints meet.
+        </p>
+        <a className="text-action" href={identity.linkedIn} target="_blank" rel="noreferrer">View the full profile <ArrowUpRight size={15} /></a>
+      </div>
+
+      <div className="recognition-list">
+        {recognition.map((item, index) => (
+          <article key={item.title} data-reveal>
+            <span>{String(index + 1).padStart(2, "0")}</span>
+            <div><h3>{item.title}</h3><strong>{item.issuer}</strong></div>
+            <time>{item.date}</time>
+            <p>{item.detail}</p>
+          </article>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function Contact() {
+  const iconFor = (label: string) => {
+    if (label === "GitHub") return <Github size={19} />;
+    if (label === "LinkedIn") return <Linkedin size={19} />;
+    return <Mail size={19} />;
+  };
+
+  return (
+    <section className="contact-section section-dark" id="contact">
+      <div className="contact-kicker" data-reveal><span>05</span><strong>Contact</strong></div>
+      <div className="contact-grid">
+        <div data-reveal>
+          <h2 tabIndex={-1}>Let’s build <em>the hard part.</em></h2>
+          <p>
+            I’m interested in applied AI, ML engineering, developer tools, and data-product work—especially systems that need to be useful, inspectable, and reliable.
+          </p>
+          <a className="button button-light" href={`mailto:${identity.email}`}>Email Aleem <ArrowUpRight size={17} /></a>
+        </div>
+        <ul data-reveal>
+          {socials.map((social) => (
+            <li key={social.label}>
+              <a href={social.href} target={social.external ? "_blank" : undefined} rel={social.external ? "noreferrer" : undefined}>
+                {iconFor(social.label)}
+                <span>{social.label}</span>
+                <ArrowUpRight size={17} />
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  );
+}
+
+function CaseStudyPage({
+  project,
+  nextProject,
+  onBack,
+  onNavigateHome,
+  onOpen,
+}: {
+  project: CaseStudy;
+  nextProject: CaseStudy;
+  onBack: () => void;
+  onNavigateHome: (target: string) => void;
+  onOpen: (project: CaseStudy) => void;
+}) {
+  return (
+    <main className="case-page" id="main">
+      <section className="case-page-hero">
+        <button className="case-back" type="button" onClick={onBack}>
+          <ArrowRight size={15} /> Back to selected work
+        </button>
+        <div className="case-page-heading">
+          <div>
+            <span>{project.number} / {project.kicker}</span>
+            <strong>{project.stage} · {project.year}</strong>
+          </div>
+          <h1 tabIndex={-1}>{project.headline}</h1>
+          <p>{project.summary}</p>
+        </div>
+        <div className="case-page-media">
+          <ProjectVisual visual={project.visual} />
+          <span>Code-native system illustration · not a fabricated product screenshot</span>
+        </div>
+        <dl className="case-page-facts">
+          <div><dt>System</dt><dd>{project.title}</dd></div>
+          <div><dt>Scope</dt><dd>{project.scope}</dd></div>
+          <div><dt>Maturity</dt><dd>{project.stage}</dd></div>
+          <div><dt>Year</dt><dd>{project.year}</dd></div>
+        </dl>
+      </section>
+
+      <section className="case-page-narrative">
+        <article>
+          <span>01 / Context</span>
+          <h2>The constraint</h2>
+          <p>{project.challenge}</p>
+        </article>
+        <article>
+          <span>02 / System</span>
+          <h2>The response</h2>
+          <p>{project.approach}</p>
+        </article>
+        <article>
+          <span>03 / Evidence</span>
+          <h2>The outcome</h2>
+          <p>{project.outcome}</p>
+        </article>
+      </section>
+
+      <section className="case-page-proof">
+        <div>
+          <span>Proof points</span>
+          <ul>{project.proofPoints.map((point) => <li key={point}>{point}</li>)}</ul>
+        </div>
+        <div>
+          <span>Technology</span>
+          <ul>{project.stack.map((tool) => <li key={tool}>{tool}</li>)}</ul>
+        </div>
+        <div className="case-page-links">
+          {project.links.map((link) => (
+            <a
+              key={link.href}
+              href={link.href}
+              target={link.external ? "_blank" : undefined}
+              rel={link.external ? "noreferrer" : undefined}
+              onClick={(event) => {
+                if (!link.external) {
+                  event.preventDefault();
+                  onNavigateHome(link.href);
+                }
+              }}
+            >
+              {link.label}<ArrowUpRight size={16} />
+            </a>
+          ))}
+        </div>
+      </section>
+
+      <section className="next-case section-dark">
+        <span>Next case file / {nextProject.number}</span>
+        <button type="button" onClick={() => onOpen(nextProject)}>
+          <strong>{nextProject.title}</strong>
+          <em>{nextProject.headline}</em>
+          <ArrowUpRight size={28} />
+        </button>
+      </section>
+    </main>
+  );
+}
+
+function CaseNotFound({ onBack }: { onBack: () => void }) {
+  return (
+    <main className="case-not-found" id="main">
+      <span>404 / Case file</span>
+      <h1>This case file does not exist.</h1>
+      <p>The project may have moved or the link may be incomplete.</p>
+      <button className="button button-primary" type="button" onClick={onBack}>Return home <ArrowRight size={16} /></button>
+    </main>
+  );
+}
+
+function HomePage({ onOpen }: { onOpen: (project: CaseStudy) => void }) {
+  return (
+    <main id="main">
+      <Hero />
+      <ProofRail />
+      <SelectedWork onOpen={onOpen} />
+      <Experience />
+      <Lab />
+      <About />
+      <Contact />
+    </main>
+  );
+}
+
+function Footer({ caseMode }: { caseMode: boolean }) {
+  return (
+    <footer className="site-footer section-dark">
+      <strong>Aleem Azhar</strong>
+      <span>AI systems / ML research / product engineering</span>
+      <a href={caseMode ? `${import.meta.env.BASE_URL}#top` : "#top"}>Back to top <ArrowUpRight size={14} /></a>
     </footer>
   );
 }
 
-function BackToTop() {
-  const scrollToTop = () => {
-    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    window.scrollTo({ top: 0, behavior: reduceMotion ? "auto" : "smooth" });
+export default function App() {
+  const readCaseSlug = () => new URLSearchParams(window.location.search).get("case");
+  const [caseSlug, setCaseSlug] = useState<string | null>(readCaseSlug);
+  const pendingHomeTarget = useRef<string | null>(null);
+  const pendingHomeFocus = useRef<string | null>(null);
+  const { motionPaused, systemReduced, toggle } = useMotionControl();
+  const progressRef = useScrollProgress();
+  useReveal(caseSlug);
+  const activeProject = caseStudies.find((project) => project.slug === caseSlug) ?? null;
+  const unknownCase = Boolean(caseSlug && !activeProject);
+
+  useEffect(() => {
+    const onPopState = (event: PopStateEvent) => {
+      const nextSlug = readCaseSlug();
+      setCaseSlug(nextSlug);
+      if (!nextSlug) {
+        const top = typeof event.state?.homeScroll === "number" ? event.state.homeScroll : 0;
+        pendingHomeFocus.current = pendingHomeTarget.current
+          ? null
+          : typeof event.state?.homeFocusSlug === "string"
+            ? event.state.homeFocusSlug
+            : null;
+        window.requestAnimationFrame(() => window.scrollTo({ top, behavior: "auto" }));
+      }
+    };
+    window.addEventListener("popstate", onPopState);
+    return () => window.removeEventListener("popstate", onPopState);
+  }, []);
+
+  useEffect(() => {
+    const meta = document.querySelector<HTMLMetaElement>('meta[name="description"]');
+    if (activeProject) {
+      document.title = `${activeProject.title} | Aleem Azhar`;
+      meta?.setAttribute("content", activeProject.summary);
+      window.requestAnimationFrame(() => {
+        window.scrollTo({ top: 0, behavior: "auto" });
+        document.querySelector<HTMLElement>(".case-page h1")?.focus({ preventScroll: true });
+      });
+    } else if (unknownCase) {
+      document.title = "Case file not found | Aleem Azhar";
+      meta?.setAttribute("content", "The requested Aleem Azhar portfolio case file was not found.");
+    } else {
+      document.title = "Aleem Azhar | AI Systems, ML Research & Product Engineering";
+      meta?.setAttribute(
+        "content",
+        "Aleem Azhar builds inspectable AI systems, noise-resilient machine-learning research, developer tools, and full-stack data products.",
+      );
+    }
+  }, [activeProject, unknownCase]);
+
+  useEffect(() => {
+    if (caseSlug) return;
+    const target = pendingHomeTarget.current;
+    const focusSlug = pendingHomeFocus.current;
+    pendingHomeTarget.current = null;
+    pendingHomeFocus.current = null;
+    if (!target && !focusSlug) return;
+    window.requestAnimationFrame(() => {
+      if (target) {
+        const destination = document.querySelector<HTMLElement>(target);
+        destination?.scrollIntoView({ block: "start", behavior: "auto" });
+        if (!focusSlug) {
+          destination?.querySelector<HTMLElement>("h1, h2")?.focus({ preventScroll: true });
+        }
+      }
+      if (focusSlug) {
+        document
+          .querySelector<HTMLButtonElement>(`[data-case-trigger="${CSS.escape(focusSlug)}"]`)
+          ?.focus({ preventScroll: true });
+      }
+    });
+  }, [caseSlug]);
+
+  const openProject = (project: CaseStudy) => {
+    const update = () => {
+      if (!caseSlug) {
+        window.history.replaceState(
+          { ...window.history.state, homeScroll: window.scrollY, homeFocusSlug: project.slug },
+          "",
+        );
+      }
+      const url = new URL(import.meta.env.BASE_URL, window.location.origin);
+      url.searchParams.set("case", project.slug);
+      if (caseSlug) {
+        window.history.replaceState(
+          {
+            portfolioCase: true,
+            hasHomeEntry: Boolean(window.history.state?.hasHomeEntry),
+            slug: project.slug,
+          },
+          "",
+          `${url.pathname}${url.search}`,
+        );
+      } else {
+        window.history.pushState(
+          { portfolioCase: true, hasHomeEntry: true, slug: project.slug },
+          "",
+          `${url.pathname}${url.search}`,
+        );
+      }
+      setCaseSlug(project.slug);
+    };
+    const transitionDocument = document as TransitionDocument;
+    if (!motionPaused && transitionDocument.startViewTransition) {
+      transitionDocument.startViewTransition(update);
+    } else {
+      update();
+    }
   };
 
-  return (
-    <button
-      className="back-to-top"
-      type="button"
-      aria-label="Back to top"
-      onClick={scrollToTop}
-    >
-      <ArrowUp size={18} />
-    </button>
-  );
-}
+  const returnHome = (target?: string) => {
+    pendingHomeTarget.current = target ?? null;
+    if (!target && !window.history.state?.hasHomeEntry && activeProject) {
+      pendingHomeTarget.current = `#${activeProject.slug}`;
+      pendingHomeFocus.current = activeProject.slug;
+    }
+    const update = () => {
+      if (window.history.state?.hasHomeEntry) {
+        window.history.back();
+        return;
+      }
+      const url = new URL(import.meta.env.BASE_URL, window.location.origin);
+      window.history.replaceState({ homeScroll: 0 }, "", url.pathname);
+      setCaseSlug(null);
+      window.scrollTo({ top: 0, behavior: "auto" });
+    };
+    const transitionDocument = document as TransitionDocument;
+    if (!motionPaused && transitionDocument.startViewTransition) {
+      transitionDocument.startViewTransition(update);
+    } else {
+      update();
+    }
+  };
 
-export default function App() {
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [overlay, setOverlay] = useState<PortfolioProject | null>(null);
-
-  useBodyLock(menuOpen || Boolean(overlay));
+  const nextProject = activeProject
+    ? caseStudies[(caseStudies.findIndex((project) => project.slug === activeProject.slug) + 1) % caseStudies.length]
+    : caseStudies[0];
 
   return (
     <>
-      <Chrome menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
-      <main>
-        <Hero />
-        <Work openProject={setOverlay} overlayOpen={Boolean(overlay)} />
-        <Approach />
-        <Background />
-        <Contact />
-      </main>
-      <Footer />
-      <BackToTop />
-      <ProjectOverlay project={overlay} onClose={() => setOverlay(null)} />
+      <a className="skip-link" href="#main">Skip to content</a>
+      <span className="scroll-progress" ref={progressRef} aria-hidden="true" />
+      <Header motionPaused={motionPaused} systemReduced={systemReduced} onToggleMotion={toggle} caseMode={Boolean(caseSlug)} />
+      {activeProject ? (
+        <CaseStudyPage
+          project={activeProject}
+          nextProject={nextProject}
+          onBack={() => returnHome()}
+          onNavigateHome={returnHome}
+          onOpen={openProject}
+        />
+      ) : unknownCase ? (
+        <CaseNotFound onBack={() => returnHome()} />
+      ) : (
+        <HomePage onOpen={openProject} />
+      )}
+      <Footer caseMode={Boolean(caseSlug)} />
     </>
   );
 }
