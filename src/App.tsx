@@ -453,7 +453,6 @@ function Lab() {
             key={project.title}
             target="_blank"
             rel="noreferrer"
-            data-reveal
           >
             <span>{String(index + 1).padStart(2, "0")}</span>
             <div>

@@ -107,14 +107,24 @@ test("a direct case URL can traverse cases and still return home", async ({ page
   await expect(page.getByRole("button", { name: "Open RGAN Research case file" })).toBeFocused();
 });
 
-test("lab filters change the visible project index", async ({ page }) => {
+test("lab filters keep every selected project visibly rendered", async ({ page }) => {
   await page.goto("/#lab");
-  await page.getByRole("button", { name: "AI tools", exact: true }).click();
 
-  await expect(page.getByRole("heading", { name: "AgentClassroom" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "AI Social Mirror" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Joby" })).toHaveCount(0);
-  await expect(page.getByText("02 projects", { exact: true })).toBeVisible();
+  const filters = [
+    { label: "All", count: 8, firstProject: "AgentClassroom" },
+    { label: "AI tools", count: 2, firstProject: "AgentClassroom" },
+    { label: "ML & data", count: 3, firstProject: "City Pulse" },
+    { label: "Product systems", count: 3, firstProject: "Joby" },
+    { label: "AI tools", count: 2, firstProject: "AgentClassroom" },
+  ];
+
+  for (const filter of filters) {
+    await page.getByRole("button", { name: filter.label, exact: true }).click();
+    const rows = page.locator(".lab-row");
+    await expect(rows).toHaveCount(filter.count);
+    await expect(page.getByRole("heading", { name: filter.firstProject, exact: true })).toBeVisible();
+    expect(await rows.evaluateAll((items) => items.every((item) => getComputedStyle(item).opacity === "1"))).toBe(true);
+  }
 });
 
 test("mobile navigation closes after selection and on Escape", async ({ page }) => {
