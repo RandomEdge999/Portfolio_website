@@ -1,8 +1,7 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import "@fontsource-variable/manrope/wght.css";
-import "@fontsource/instrument-serif/400.css";
-import "@fontsource/instrument-serif/400-italic.css";
+import "@fontsource-variable/space-grotesk/index.css";
+import "@fontsource/jetbrains-mono/latin-400.css";
 import App from "./App";
 import "./styles.css";
 

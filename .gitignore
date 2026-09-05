@@ -6,6 +6,7 @@ vite.config.js
 vite.config.d.ts
 test-results
 playwright-report
+artifacts/
 playwright-debug.spec.js
 assets/aleem-hero-cutout.webp
 Aleem_Azhar_Master_Profile_Databank.md
